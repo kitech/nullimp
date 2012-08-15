@@ -13,8 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    vlinkocv.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    vlinkocv.h
 
 FORMS    += mainwindow.ui
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += opencv
