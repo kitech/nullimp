@@ -14,10 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    vlinkocv.cpp
+    vlinkocv.cpp \
+    ./src/util.cpp \
+    ../../../../../../home/gzleo/workspace1/nullimp/src/imageprocessor.cpp
 
 HEADERS  += mainwindow.h \
-    vlinkocv.h
+    vlinkocv.h \
+    ./src/util.h \
+    ../../../../../../home/gzleo/workspace1/nullimp/src/imageprocessor.h
 
 FORMS    += mainwindow.ui
 
