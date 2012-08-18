@@ -13,8 +13,16 @@ class MainWindow : public QMainWindow
     
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    virtual ~MainWindow();
     
+    void installConnection();
+
+public slots:
+    void onSelectSrc();
+    void onImageProcessorDone();
+    void onSmoothImage();
+
+
 private:
     Ui::MainWindow *ui;
 };

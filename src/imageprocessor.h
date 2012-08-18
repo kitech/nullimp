@@ -17,7 +17,14 @@ public:
 signals:
     
 public slots:
-    
+    QStringList getResult();
+
+private:
+    bool smooth_it(QString srcfile);
+
+private:
+    QStringList margs;
+    QStringList mreses;
 };
 
 #endif // IMAGEPROCESSOR_H
