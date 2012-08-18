@@ -48,6 +48,20 @@ void MainWindow:: onImageProcessorDone()
     QStringList reses = proc->getResult();
 
     qDebug()<<"process result:"<< reses;
+
+    if (reses.at(0) == "smooth") {
+        QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(300);
+        QPixmap r2 = QPixmap(reses.at(3)).scaledToWidth(300);
+        QPixmap r3 = QPixmap(reses.at(4)).scaledToWidth(300);
+        QPixmap r4 = QPixmap(reses.at(5)).scaledToWidth(300);
+
+        this->ui->label_2->setPixmap(r1);
+        this->ui->label_5->setPixmap(r2);
+        this->ui->label_6->setPixmap(r3);
+        this->ui->label_7->setPixmap(r4);
+    }
+
+    delete proc;
 }
 
 void MainWindow::onSmoothImage()

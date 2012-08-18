@@ -53,6 +53,7 @@ bool ImageProcessor::smooth_it(QString srcfile)
     cv::Mat src; cv::Mat dst;
     char window_name[] = "Filter Demo 1";
 
+    QString resfile;
     char *srcimg = srcfile.toAscii().data();
     /// Load the source image
       // src = cv::imread( "../images/lena.jpg", 1 );
@@ -67,23 +68,39 @@ bool ImageProcessor::smooth_it(QString srcfile)
 
       }
 
+      resfile = "/tmp/smooth_blur_" + QFileInfo(srcfile).fileName();
+      cv::imwrite(resfile.toAscii().data(), dst);
+      this->mreses << resfile;
+
+      dst = src.clone();
        for ( int i = 1; i < MAX_KERNEL_LENGTH; i = i + 2 )
            {
                     cv::GaussianBlur( src, dst, cv::Size( i, i ), 0, 0 );
             }
+       resfile = "/tmp/smooth_gblur_" + QFileInfo(srcfile).fileName();
+       cv::imwrite(resfile.toAscii().data(), dst);
+       this->mreses << resfile;
 
-
+dst = src.clone();
         for ( int i = 1; i < MAX_KERNEL_LENGTH; i = i + 2 )
             {
             cv::medianBlur ( src, dst, i );
 
         }
+        resfile = "/tmp/smooth_mblur_" + QFileInfo(srcfile).fileName();
+        cv::imwrite(resfile.toAscii().data(), dst);
+        this->mreses << resfile;
 
+dst = src.clone();
         for ( int i = 1; i < MAX_KERNEL_LENGTH; i = i + 2 )
             {
             cv::bilateralFilter ( src, dst, i, i*2, i/2 );
 
         }
+        resfile = "/tmp/smooth_bilateral_" + QFileInfo(srcfile).fileName();
+        cv::imwrite(resfile.toAscii().data(), dst);
+        this->mreses << resfile;
+
 
     return true;
 }
