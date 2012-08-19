@@ -10,20 +10,24 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = nullimp
 TEMPLATE = app
+OBJECTS_DIR = ./build/.
+MOC_DIR = ./build/.
+UI_DIR = ./build/.
 
-
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    vlinkocv.cpp \
+SOURCES += ./src/main.cpp\
+        ./src/mainwindow.cpp \
+    ./src/vlinkocv.cpp \
     ./src/util.cpp \
-    ../../../../../../home/gzleo/workspace1/nullimp/src/imageprocessor.cpp
+    ./src/simplelog.cpp \
+    ./src/imageprocessor.cpp
 
-HEADERS  += mainwindow.h \
-    vlinkocv.h \
+HEADERS  += ./src/mainwindow.h \
+    ./src/vlinkocv.h \
     ./src/util.h \
-    ../../../../../../home/gzleo/workspace1/nullimp/src/imageprocessor.h
+    ./src/simplelog.h \
+    ./src/imageprocessor.h
 
-FORMS    += mainwindow.ui
+FORMS    += uis/mainwindow.ui
 
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += opencv

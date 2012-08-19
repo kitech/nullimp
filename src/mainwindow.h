@@ -19,8 +19,9 @@ public:
 
 public slots:
     void onSelectSrc();
+    void onProcessImage();
     void onImageProcessorDone();
-    void onSmoothImage();
+
 
 
 private:
