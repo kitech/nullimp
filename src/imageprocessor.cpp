@@ -43,6 +43,9 @@ void ImageProcessor::run()
     } else if (op == "dilate") {
         src1 = args.at(1);
         this->dilate_it(src1);
+    } else if (op == "morph") {
+        src1 = args.at(1);
+        this->morph_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -241,4 +244,46 @@ bool ImageProcessor::dilate_it(QString srcfile)
     return true;
 }
 
+bool ImageProcessor::morph_it(QString srcfile)
+{
+    /// Global variables
+    Mat src, dst;
+
+    int morph_elem = 0;
+    int morph_size = 0;
+    int morph_operator = 0;
+    int const max_operator = 4;
+    int const max_elem = 2;
+    int const max_kernel_size = 21;
+
+    morph_elem = this->margs.at(2).toInt();
+    morph_size = this->margs.at(3).toInt();
+    if (this->margs.at(4) == "open") morph_operator = 0;
+    if (this->margs.at(4) == "close") morph_operator = 1;
+    if (this->margs.at(4) == "morph") morph_operator = 2;
+    if (this->margs.at(4) == "tophat") morph_operator = 3;
+    if (this->margs.at(4) == "blackhat") morph_operator = 4;
+
+    /// Load an image
+    // src = imread( argv[1] );
+    src = imread(this->get_cpath(srcfile), 1);
+
+    if( !src.data )
+    { return false; }
+
+    // Since MORPH_X : 2,3,4,5 and 6
+    int operation = morph_operator + 2;
+
+    Mat element = getStructuringElement( morph_elem, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
+
+    /// Apply the specified morphology operation
+    morphologyEx( src, dst, operation, element );
+
+    QString resfile = this->get_tpath(srcfile, "morph", this->margs.at(4));
+    bool bret = imwrite(this->get_cpath(resfile), dst);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
 

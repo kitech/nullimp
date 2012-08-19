@@ -1,3 +1,7 @@
+/**
+ *
+ *
+ */
 
 #include <QtGui>
 
@@ -37,12 +41,16 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_9, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_13, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_5, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_11, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_15, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
 }
 
@@ -75,12 +83,21 @@ void MainWindow::onSelectSrc()
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_10->setPixmap(tpic);
     }
+
+    if (btn == this->ui->pushButton_13) {
+        this->ui->lineEdit_7->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_24->setPixmap(tpic);
+    }
 }
 
 void MainWindow::onProcessImage()
 {
     QPushButton *btn = (QPushButton*)(sender());
 
+    // smooth
     if (btn == this->ui->pushButton) {
         QString srcfile = this->ui->lineEdit->text();
 
@@ -93,6 +110,7 @@ void MainWindow::onProcessImage()
         proc->run(args);
     }
 
+    // erode
     if (btn == this->ui->pushButton_5) {
         QString srcfile = this->ui->lineEdit_3->text();
 
@@ -107,6 +125,7 @@ void MainWindow::onProcessImage()
         proc->run(args);
     }
 
+    // dilate
     if (btn == this->ui->pushButton_11) {
         QString srcfile = this->ui->lineEdit_5->text();
 
@@ -115,6 +134,29 @@ void MainWindow::onProcessImage()
         args << "dilate" << srcfile
              << QString::number(this->ui->horizontalSlider_3->value())
              << QString::number(this->ui->horizontalSlider_4->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
+
+    // morphology
+    if (btn == this->ui->pushButton_15) {
+        QString srcfile = this->ui->lineEdit_7->text();
+        QString subtran = "";
+
+        if (this->ui->radioButton->isChecked()) subtran = "open";
+        if (this->ui->radioButton_2->isChecked()) subtran = "close";
+        if (this->ui->radioButton_3->isChecked()) subtran = "morph";
+        if (this->ui->radioButton_4->isChecked()) subtran = "tophat";
+        if (this->ui->radioButton_5->isChecked()) subtran = "blackhat";
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "morph" << srcfile
+             << QString::number(this->ui->horizontalSlider_5->value())
+             << QString::number(this->ui->horizontalSlider_6->value())
+             << subtran;
 
         QObject::connect(proc, SIGNAL(finished()),
                          this, SLOT(onImageProcessorDone()));
@@ -145,15 +187,22 @@ void MainWindow:: onImageProcessorDone()
 
 
     if (op == "erode") {
-        QPixmap r1 = QPixmap(reses.at(4)).scaledToWidth(300);
+        QPixmap r1 = QPixmap(reses.at(4)).scaledToWidth(500);
         this->ui->label_9->setPixmap(r1);
     }
 
     if (op == "dilate") {
-        QPixmap r1 = QPixmap(reses.at(4)).scaledToWidth(300);
+        QPixmap r1 = QPixmap(reses.at(4)).scaledToWidth(500);
         this->ui->label_11->setPixmap(r1);
 
     }
+
+    if (op == "morph") {
+        QPixmap r1 = QPixmap(reses.at(5)).scaledToWidth(500);
+        this->ui->label_25->setPixmap(r1);
+
+    }
+
 
     delete proc;
 }

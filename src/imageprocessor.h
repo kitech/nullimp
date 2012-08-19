@@ -25,6 +25,7 @@ private:
     bool smooth_it(QString srcfile);
     bool erode_it(QString srcfile);
     bool dilate_it(QString srcfile);
+    bool morph_it(QString srcfile);
 
 private:
     QStringList margs;
