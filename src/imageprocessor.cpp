@@ -1,3 +1,9 @@
+/**
+ *
+ *
+ *
+ */
+
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
@@ -97,11 +103,29 @@ char *ImageProcessor:: get_cpath(const QString &srcfile)
     return cpath;
 }
 
-QString ImageProcessor::get_tpath(const QString &srcfile, const QString &prefix, const QString &subprefix)
+std::string ImageProcessor::get_cxxpath(const QString &srcfile)
 {
-    return "/tmp/" + prefix +   "_" + subprefix +  "_" + QFileInfo(srcfile).fileName();
+    std::string cxxpath = srcfile.toStdString();
+
+    return cxxpath;
 }
 
+QString ImageProcessor::get_tpath(const QString &srcfile, const QString &prefix, const QString &subprefix)
+{
+    QString utmp = QDir::tempPath();
+    QString tpath = utmp + "/" + prefix +   "_" + subprefix +  "_" + QFileInfo(srcfile).fileName();
+    return tpath;
+    // return "/tmp/" + prefix +   "_" + subprefix +  "_" + QFileInfo(srcfile).fileName();
+}
+
+std::string ImageProcessor::get_txxpath(const QString &srcfile, const QString &prefix, const QString &subprefix)
+{
+    QString utmp = QDir::tempPath();
+    QString tpath = utmp + "/" + prefix +   "_" + subprefix +  "_" + QFileInfo(srcfile).fileName();
+    return tpath.toStdString();
+}
+
+//////
 bool ImageProcessor::smooth_it(QString srcfile)
 {
     /// Global Variables
@@ -124,10 +148,9 @@ bool ImageProcessor::smooth_it(QString srcfile)
     for ( int i = 1; i < MAX_KERNEL_LENGTH; i = i + 2 )
     {
         cv::blur( src, dst, cv::Size( i, i ), cv::Point(-1,-1) );
-
     }
-
-    resfile = "/tmp/smooth_blur_" + QFileInfo(srcfile).fileName();
+    // resfile = "/tmp/smooth_blur_" + QFileInfo(srcfile).fileName();
+    resfile = this->get_tpath(srcfile, "smooth", "blur");
     cv::imwrite(resfile.toAscii().data(), dst);
     this->mreses << resfile;
 
@@ -136,7 +159,8 @@ bool ImageProcessor::smooth_it(QString srcfile)
     {
         cv::GaussianBlur( src, dst, cv::Size( i, i ), 0, 0 );
     }
-    resfile = "/tmp/smooth_gblur_" + QFileInfo(srcfile).fileName();
+    // resfile = "/tmp/smooth_gblur_" + QFileInfo(srcfile).fileName();
+    resfile = this->get_tpath(srcfile, "smooth", "gblur");
     cv::imwrite(resfile.toAscii().data(), dst);
     this->mreses << resfile;
 
@@ -146,7 +170,8 @@ bool ImageProcessor::smooth_it(QString srcfile)
         cv::medianBlur ( src, dst, i );
 
     }
-    resfile = "/tmp/smooth_mblur_" + QFileInfo(srcfile).fileName();
+    // resfile = "/tmp/smooth_mblur_" + QFileInfo(srcfile).fileName();
+    resfile = this->get_tpath(srcfile, "smooth", "mblur");
     cv::imwrite(resfile.toAscii().data(), dst);
     this->mreses << resfile;
 
@@ -156,7 +181,8 @@ bool ImageProcessor::smooth_it(QString srcfile)
         cv::bilateralFilter ( src, dst, i, i*2, i/2 );
 
     }
-    resfile = "/tmp/smooth_bilateral_" + QFileInfo(srcfile).fileName();
+    // resfile = "/tmp/smooth_bilateral_" + QFileInfo(srcfile).fileName();
+    resfile = this->get_tpath(srcfile, "smooth", "bilateral");
     cv::imwrite(resfile.toAscii().data(), dst);
     this->mreses << resfile;
 
