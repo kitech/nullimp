@@ -52,6 +52,9 @@ void ImageProcessor::run()
     } else if (op == "morph") {
         src1 = args.at(1);
         this->morph_it(src1);
+    } else if (op == "pyramids") {
+        src1 = args.at(1);
+        this->pyramids_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -306,6 +309,50 @@ bool ImageProcessor::morph_it(QString srcfile)
     morphologyEx( src, dst, operation, element );
 
     QString resfile = this->get_tpath(srcfile, "morph", this->margs.at(4));
+    bool bret = imwrite(this->get_cpath(resfile), dst);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
+
+bool ImageProcessor::pyramids_it(QString srcfile)
+{
+    /// Global variables
+    Mat src, dst, tmp;
+//    char* window_name = "Pyramids Demo";
+
+    /// Test image - Make sure it s divisible by 2^{n}
+    // src = imread( "../images/chicky_512.jpg" );
+    src = imread(this->get_cpath(srcfile));
+    if( !src.data ) {
+        printf(" No data! -- Exiting the program \n");
+        return false;
+    }
+
+    tmp = src;
+    dst = tmp;
+
+    /// Create window
+    //namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+    //imshow( window_name, dst );
+
+    int scale_rate = this->margs.at(3).toInt();
+    // scale_rate = 3;
+
+    /// Loop
+    // 这两个函数中的*2和/2操作是固定的，只能是按2的倍数处理。
+    for (int i = 0; i < scale_rate; i ++) {
+        qLogx()<<i << "up:" << tmp.cols << tmp.rows;
+        if (this->margs.at(2) == "up") {
+            pyrUp( tmp, dst, Size( tmp.cols*2, tmp.rows*2 ) );
+        } else {
+            pyrDown( tmp, dst, Size( tmp.cols/2, tmp.rows/2 ) );
+        }
+        tmp  = dst;
+    }
+
+    QString resfile = this->get_tpath(srcfile, "pyramids", this->margs.at(2));
     bool bret = imwrite(this->get_cpath(resfile), dst);
     this->mreses << resfile;
     qLogx()<<bret << resfile << QFileInfo(resfile).size();

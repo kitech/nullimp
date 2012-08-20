@@ -43,6 +43,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_13, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_17, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -51,6 +53,8 @@ void MainWindow::installConnection()
     QObject::connect(this->ui->pushButton_11, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_15, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_19, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
 }
 
@@ -90,6 +94,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_24->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_17) {
+        this->ui->lineEdit_9->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_30->setPixmap(tpic);
     }
 }
 
@@ -162,6 +174,25 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// pyramids
+    if (btn == this->ui->pushButton_19) {
+        QString srcfile = this->ui->lineEdit_9->text();
+        QString updown;
+
+        if (this->ui->radioButton_11->isChecked()) updown = "down";
+        if (this->ui->radioButton_12->isChecked()) updown = "up";
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "pyramids" << srcfile
+             << updown
+             << QString::number(this->ui->horizontalSlider_8->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -203,6 +234,10 @@ void MainWindow:: onImageProcessorDone()
 
     }
 
+    if (op == "pyramids") {
+        QPixmap r1 = QPixmap(reses.at(4));  // .scaledToWidth(500);
+        this->ui->label_31->setPixmap(r1);
+    }
 
     delete proc;
 }
