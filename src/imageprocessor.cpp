@@ -55,6 +55,9 @@ void ImageProcessor::run()
     } else if (op == "pyramids") {
         src1 = args.at(1);
         this->pyramids_it(src1);
+    } else if (op == "threshold") {
+        src1 = args.at(1);
+        this->threshold_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -360,3 +363,44 @@ bool ImageProcessor::pyramids_it(QString srcfile)
     return true;
 }
 
+bool ImageProcessor:: threshold_it(QString srcfile)
+{
+    /// Global variables
+
+    int threshold_value = 0;
+    int threshold_type = 3;;
+    int const max_value = 255;
+    int const max_type = 4;
+    int const max_BINARY_value = 255;
+
+    Mat src, src_gray, dst;
+
+    /// Load an image
+    // src = imread( argv[1], 1 );
+    src = imread(this->get_cpath(srcfile));
+
+    if (this->margs.at(2) == "bin") threshold_type = 0;
+    if (this->margs.at(2) == "binvert") threshold_type = 1;
+    if (this->margs.at(2) == "threshold") threshold_type = 2;
+    if (this->margs.at(2) == "th2zero") threshold_type = 3;
+    if (this->margs.at(2) == "th2zeroinvert") threshold_type = 4;
+    threshold_value = this->margs.at(3).toInt();
+
+    /// Convert the image to Gray
+    cvtColor( src, src_gray, CV_RGB2GRAY );
+
+    /* 0: Binary
+       1: Binary Inverted
+       2: Threshold Truncated
+       3: Threshold to Zero
+       4: Threshold to Zero Inverted
+     */
+
+    threshold( src_gray, dst, threshold_value, max_BINARY_value,threshold_type );
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), this->margs.at(2));
+    bool bret = imwrite(this->get_cpath(resfile), dst);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}

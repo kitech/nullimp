@@ -45,6 +45,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_17, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_27, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -56,6 +58,10 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_19, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_25, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_7, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_25, SIGNAL(clicked()));
 }
 
 void MainWindow::onSelectSrc()
@@ -103,6 +109,15 @@ void MainWindow::onSelectSrc()
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_30->setPixmap(tpic);
     }
+
+    if (btn == this->ui->pushButton_27) {
+        this->ui->lineEdit_13->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_38->setPixmap(tpic);
+    }
+
 }
 
 void MainWindow::onProcessImage()
@@ -193,6 +208,28 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// threshold
+    if (btn == this->ui->pushButton_25) {
+        QString srcfile = this->ui->lineEdit_13->text();
+        QString subtran = "";
+
+        if (this->ui->radioButton_6->isChecked()) subtran = "bin";
+        if (this->ui->radioButton_7->isChecked()) subtran = "binvert";
+        if (this->ui->radioButton_8->isChecked()) subtran = "threshold";
+        if (this->ui->radioButton_9->isChecked()) subtran = "th2zero";
+        if (this->ui->radioButton_10->isChecked()) subtran = "th2zeroinvert";
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "threshold" << srcfile
+             << subtran
+             << QString::number(this->ui->horizontalSlider_7->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -237,6 +274,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "pyramids") {
         QPixmap r1 = QPixmap(reses.at(4));  // .scaledToWidth(500);
         this->ui->label_31->setPixmap(r1);
+    }
+
+    if (op == "threshold") {
+        QPixmap r1 = QPixmap(reses.at(4)).scaledToWidth(500);
+        this->ui->label_39->setPixmap(r1);
     }
 
     delete proc;

@@ -29,6 +29,7 @@ private:
     bool dilate_it(QString srcfile);
     bool morph_it(QString srcfile);
     bool pyramids_it(QString srcfile);
+    bool threshold_it(QString srcfile);
 
 private:
     QStringList margs;
