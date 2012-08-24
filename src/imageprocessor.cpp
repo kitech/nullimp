@@ -61,6 +61,9 @@ void ImageProcessor::run()
     } else if (op == "filter2d") {
         src1 = args.at(1);
         this->filter2d_it(src1);
+    } else if (op == "border") {
+        src1 = args.at(1);
+        this->border_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -448,5 +451,59 @@ bool ImageProcessor:: filter2d_it(QString srcfile)
     bool bret = imwrite(this->get_cpath(resfile), dst);
     this->mreses << resfile;
     qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
+
+bool ImageProcessor::border_it(QString srcfile)
+{
+    /// Global Variables
+    Mat src, dst;
+    int top, bottom, left, right;
+    int borderType;
+    Scalar value;
+    // char* window_name = "copyMakeBorder Demo";
+    RNG rng(12345);
+
+      int c;
+
+      /// Load an image
+      // src = imread( argv[1] );
+      src = imread(this->get_cpath(srcfile));
+
+      if( !src.data )
+      {
+          return false;
+          printf(" No data entered, please enter the path to an image file \n");
+      }
+
+      /// Brief how-to for this program
+      printf( "\n \t copyMakeBorder Demo: \n" );
+      printf( "\t -------------------- \n" );
+      printf( " ** Press 'c' to set the border to a random constant value \n");
+      printf( " ** Press 'r' to set the border to be replicated \n");
+      printf( " ** Press 'ESC' to exit the program \n");
+
+      /// Create window
+      // namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+
+      borderType = this->margs.at(2).toInt() == 0 ? BORDER_CONSTANT : BORDER_REPLICATE;
+
+      /// Initialize arguments for the filter
+      top = (int) (0.05*src.rows); bottom = (int) (0.05*src.rows);
+      left = (int) (0.05*src.cols); right = (int) (0.05*src.cols);
+      dst = src;
+
+      // imshow( window_name, dst );
+
+      value = Scalar( rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255) );
+      copyMakeBorder( src, dst, top, bottom, left, right, borderType, value );
+
+      QString resfile = this->get_tpath(srcfile, this->margs.at(0), this->margs.at(2));
+      bool bret = imwrite(this->get_cpath(resfile), dst);
+      this->mreses << resfile;
+      qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+
     return true;
 }

@@ -49,6 +49,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_51, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_53, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -68,7 +70,13 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_17, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_49, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_55, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_18, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_55, SIGNAL(clicked()));
+
 }
+
 
 void MainWindow::onSelectSrc()
 {
@@ -130,6 +138,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_76->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_53) {
+        this->ui->lineEdit_27->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_78->setPixmap(tpic);
     }
 }
 
@@ -257,6 +273,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// border
+    if (btn == this->ui->pushButton_55) {
+        QString srcfile = this->ui->lineEdit_27->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "border" << srcfile
+             << QString::number(this->ui->horizontalSlider_18->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -311,6 +341,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "filter2d") {
         QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_77->setPixmap(r1);
+    }
+
+    if (op == "border") {
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_79->setPixmap(r1);
     }
 
     delete proc;
