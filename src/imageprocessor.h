@@ -30,6 +30,7 @@ private:
     bool morph_it(QString srcfile);
     bool pyramids_it(QString srcfile);
     bool threshold_it(QString srcfile);
+    bool filter2d_it(QString srcfile);
 
 private:
     QStringList margs;

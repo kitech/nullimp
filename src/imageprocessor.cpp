@@ -58,6 +58,9 @@ void ImageProcessor::run()
     } else if (op == "threshold") {
         src1 = args.at(1);
         this->threshold_it(src1);
+    } else if (op == "filter2d") {
+        src1 = args.at(1);
+        this->filter2d_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -402,5 +405,48 @@ bool ImageProcessor:: threshold_it(QString srcfile)
     this->mreses << resfile;
     qLogx()<<bret << resfile << QFileInfo(resfile).size();
 
+    return true;
+}
+
+bool ImageProcessor:: filter2d_it(QString srcfile)
+{
+    /// Declare variables
+    Mat src, dst;
+
+    Mat kernel;
+    Point anchor;
+    double delta;
+    int ddepth;
+    int kernel_size;
+    //    char* window_name = "filter2D Demo";
+
+    int c;
+
+    /// Load an image
+    // src = imread( argv[1] );
+    src = imread(this->get_cpath(srcfile));
+
+    if( !src.data )
+    { return false; }
+
+    /// Create window
+    //namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+
+    /// Initialize arguments for the filter
+    anchor = Point( -1, -1 );
+    delta = 0;
+    ddepth = -1;
+
+    kernel_size = 3+2*(this->margs.at(2).toInt() % 5);
+    kernel = Mat::ones(kernel_size, kernel_size, CV_32F) / (float)(kernel_size*kernel_size);
+
+    /// Apply filter
+    filter2D(src, dst, ddepth , kernel, anchor, delta, BORDER_DEFAULT );
+
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
+    bool bret = imwrite(this->get_cpath(resfile), dst);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
     return true;
 }
