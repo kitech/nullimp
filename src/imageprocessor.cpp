@@ -67,6 +67,9 @@ void ImageProcessor::run()
     } else if (op == "sobel") {
         src1 = args.at(1);
         this->sobel_it(src1);
+    } else if (op == "laplace") {
+        src1 = args.at(1);
+        this->laplace_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -557,6 +560,47 @@ bool ImageProcessor::sobel_it(QString srcfile)
 
     QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
     bool bret = imwrite(this->get_cpath(resfile), grad);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
+
+bool ImageProcessor:: laplace_it(QString srcfile)
+{
+    Mat src, src_gray, dst;
+    int kernel_size = 3;
+    int scale = 1;
+    int delta = 0;
+    int ddepth = CV_16S;
+    char* window_name = "Laplace Demo";
+
+    int c;
+
+    /// Load an image
+    // src = imread( argv[1] );
+    src = imread(this->get_cpath(srcfile));
+
+    if( !src.data )
+      { return false; }
+
+    /// Remove noise by blurring with a Gaussian filter
+    GaussianBlur( src, src, Size(3,3), 0, 0, BORDER_DEFAULT );
+
+    /// Convert the image to grayscale
+    cvtColor( src, src_gray, CV_RGB2GRAY );
+
+    /// Create window
+    // namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+
+    /// Apply Laplace function
+    Mat abs_dst;
+
+    Laplacian( src_gray, dst, ddepth, kernel_size, scale, delta, BORDER_DEFAULT );
+    convertScaleAbs( dst, abs_dst );
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
+    bool bret = imwrite(this->get_cpath(resfile), abs_dst);
     this->mreses << resfile;
     qLogx()<<bret << resfile << QFileInfo(resfile).size();
 

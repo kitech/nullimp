@@ -53,6 +53,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_59, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_61, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -77,6 +79,8 @@ void MainWindow::installConnection()
     QObject::connect(this->ui->horizontalSlider_18, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_55, SIGNAL(clicked()));
     QObject::connect(this->ui->pushButton_57, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_63, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
 }
 
@@ -157,6 +161,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_84->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_61) {
+        this->ui->lineEdit_31->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_90->setPixmap(tpic);
     }
 }
 
@@ -312,6 +324,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// laplace
+    if (btn == this->ui->pushButton_63) {
+        QString srcfile = this->ui->lineEdit_31->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "laplace" << srcfile;
+            // << QString::number(this->ui->horizontalSlider_18->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -376,6 +402,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "sobel") {
         QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
         this->ui->label_85->setPixmap(r1);
+    }
+
+    if (op == "laplace") {
+        QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
+        this->ui->label_91->setPixmap(r1);
     }
 
     delete proc;
