@@ -55,6 +55,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_61, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_67, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -82,6 +84,10 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_63, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_65, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_21, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_65, SIGNAL(clicked()));
 }
 
 
@@ -169,6 +175,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_90->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_67) {
+        this->ui->lineEdit_33->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_94->setPixmap(tpic);
     }
 }
 
@@ -338,6 +352,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// canny
+    if (btn == this->ui->pushButton_65) {
+        QString srcfile = this->ui->lineEdit_33->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "canny" << srcfile
+            << QString::number(this->ui->horizontalSlider_21->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -407,6 +435,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "laplace") {
         QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
         this->ui->label_91->setPixmap(r1);
+    }
+
+    if (op == "canny") {
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_95->setPixmap(r1);
     }
 
     delete proc;

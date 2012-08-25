@@ -70,6 +70,9 @@ void ImageProcessor::run()
     } else if (op == "laplace") {
         src1 = args.at(1);
         this->laplace_it(src1);
+    } else if (op == "canny") {
+        src1 = args.at(1);
+        this->canny_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -601,6 +604,62 @@ bool ImageProcessor:: laplace_it(QString srcfile)
 
     QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
     bool bret = imwrite(this->get_cpath(resfile), abs_dst);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
+
+bool ImageProcessor::canny_it(QString srcfile)
+{
+    /// Global variables
+
+    Mat src, src_gray;
+    Mat dst, detected_edges;
+
+    int edgeThresh = 1;
+    int lowThreshold;
+    int const max_lowThreshold = 100;
+    int ratio = 3;
+    int kernel_size = 3;
+    char* window_name = "Edge Map";
+
+    /// Load an image
+    // src = imread( argv[1] );
+    src = imread(this->get_cpath(srcfile));
+
+    if( !src.data )
+    { return false; }
+
+    /// Create a matrix of the same type and size as src (for dst)
+    dst.create( src.size(), src.type() );
+
+    /// Convert the image to grayscale
+    cvtColor( src, src_gray, CV_BGR2GRAY );
+
+    /// Create a window
+    // namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+
+    /// Create a Trackbar for user to enter threshold
+    // createTrackbar( "Min Threshold:", window_name, &lowThreshold, max_lowThreshold, CannyThreshold );
+    lowThreshold = this->margs.at(2).toInt();
+
+    /// Show the image
+    // CannyThreshold(0, 0);
+
+    /// Reduce noise with a kernel 3x3
+    blur( src_gray, detected_edges, Size(3,3) );
+
+    /// Canny detector
+    Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size );
+
+    /// Using Canny's output as a mask, we display our result
+    dst = Scalar::all(0);
+
+    src.copyTo( dst, detected_edges);
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
+    bool bret = imwrite(this->get_cpath(resfile), detected_edges);
     this->mreses << resfile;
     qLogx()<<bret << resfile << QFileInfo(resfile).size();
 

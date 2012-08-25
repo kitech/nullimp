@@ -34,6 +34,7 @@ private:
     bool border_it(QString srcfile);
     bool sobel_it(QString srcfile);
     bool laplace_it(QString srcfile);
+    bool canny_it(QString srcfile);
 
 private:
     QStringList margs;
