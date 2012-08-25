@@ -64,6 +64,9 @@ void ImageProcessor::run()
     } else if (op == "border") {
         src1 = args.at(1);
         this->border_it(src1);
+    } else if (op == "sobel") {
+        src1 = args.at(1);
+        this->sobel_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -504,6 +507,58 @@ bool ImageProcessor::border_it(QString srcfile)
       this->mreses << resfile;
       qLogx()<<bret << resfile << QFileInfo(resfile).size();
 
+
+    return true;
+}
+
+bool ImageProcessor::sobel_it(QString srcfile)
+{
+    Mat src, src_gray;
+    Mat grad;
+    char* window_name = "Sobel Demo - Simple Edge Detector";
+    int scale = 1;
+    int delta = 0;
+    int ddepth = CV_16S;
+
+    int c;
+
+    /// Load an image
+    // src = imread( argv[1] );
+    src = imread(this->get_cpath(srcfile));
+
+    if( !src.data )
+    { return false; }
+
+
+    GaussianBlur( src, src, Size(3,3), 0, 0, BORDER_DEFAULT );
+
+    /// Convert it to gray
+    cvtColor( src, src_gray, CV_RGB2GRAY );
+
+    /// Create window
+    // namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+
+    /// Generate grad_x and grad_y
+    Mat grad_x, grad_y;
+    Mat abs_grad_x, abs_grad_y;
+
+    /// Gradient X
+    //Scharr( src_gray, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
+    Sobel( src_gray, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
+    convertScaleAbs( grad_x, abs_grad_x );
+
+    /// Gradient Y
+    //Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
+    Sobel( src_gray, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
+    convertScaleAbs( grad_y, abs_grad_y );
+
+    /// Total Gradient (approximate)
+    addWeighted( abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad );
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
+    bool bret = imwrite(this->get_cpath(resfile), grad);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
 
     return true;
 }

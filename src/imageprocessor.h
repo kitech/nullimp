@@ -32,6 +32,7 @@ private:
     bool threshold_it(QString srcfile);
     bool filter2d_it(QString srcfile);
     bool border_it(QString srcfile);
+    bool sobel_it(QString srcfile);
 
 private:
     QStringList margs;
