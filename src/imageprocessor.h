@@ -38,6 +38,8 @@ private:
     bool hough_it(QString srcfile);
     bool hough_line_it(QString srcfile);
     bool hough_circle_it(QString srcfile);
+    bool remap_it(QString srcfile);
+
 
 private:
     QStringList margs;

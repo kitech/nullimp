@@ -76,6 +76,9 @@ void ImageProcessor::run()
     } else if (op == "hough") {
         src1 = args.at(1);
         this->hough_it(src1);
+    } else if (op == "remap") {
+        src1 = args.at(1);
+        this->remap_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -766,6 +769,76 @@ bool ImageProcessor::hough_circle_it(QString srcfile)
     bool bret = imwrite(this->get_cpath(resfile), src);
     this->mreses << resfile;
     qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
+
+bool ImageProcessor::remap_it(QString srcfile)
+{
+    /// Global variables
+    Mat src, dst;
+    Mat map_x, map_y;
+    char* remap_window = "Remap demo";
+    int ind = 0;
+
+    /// Load the image
+    // src = imread( argv[1], 1 );
+    src = imread(this->get_cpath(srcfile), 1);
+
+   /// Create dst, map_x and map_y with the same size as src:
+   dst.create( src.size(), src.type() );
+   map_x.create( src.size(), CV_32FC1 );
+   map_y.create( src.size(), CV_32FC1 );
+
+   /// Create window
+   // namedWindow( remap_window, CV_WINDOW_AUTOSIZE );
+
+   ind = this->margs.at(2).toInt();
+     /// Update map_x & map_y. Then apply remap
+   // update_map();
+   {
+       ind = ind%4;
+
+       for( int j = 0; j < src.rows; j++ )
+       { for( int i = 0; i < src.cols; i++ )
+           {
+             switch( ind )
+             {
+               case 0:
+                 if( i > src.cols*0.25 && i < src.cols*0.75 && j > src.rows*0.25 && j < src.rows*0.75 )
+                   {
+                     map_x.at<float>(j,i) = 2*( i - src.cols*0.25 ) + 0.5 ;
+                     map_y.at<float>(j,i) = 2*( j - src.rows*0.25 ) + 0.5 ;
+                    }
+                 else
+                   { map_x.at<float>(j,i) = 0 ;
+                     map_y.at<float>(j,i) = 0 ;
+                   }
+                     break;
+               case 1:
+                     map_x.at<float>(j,i) = i ;
+                     map_y.at<float>(j,i) = src.rows - j ;
+                     break;
+               case 2:
+                     map_x.at<float>(j,i) = src.cols - i ;
+                     map_y.at<float>(j,i) = j ;
+                     break;
+               case 3:
+                     map_x.at<float>(j,i) = src.cols - i ;
+                     map_y.at<float>(j,i) = src.rows - j ;
+                     break;
+             } // end of switch
+           }
+        }
+   }
+     remap( src, dst, map_x, map_y, CV_INTER_LINEAR, BORDER_CONSTANT, Scalar(0,0, 0) );
+
+     /// Display results
+
+     QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
+     bool bret = imwrite(this->get_cpath(resfile), dst);
+     this->mreses << resfile;
+     qLogx()<<bret << resfile << QFileInfo(resfile).size();
 
     return true;
 }

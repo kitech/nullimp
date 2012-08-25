@@ -59,6 +59,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_69, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_75, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -94,6 +96,11 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_22, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_71, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_73, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_23, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_73, SIGNAL(clicked()));
+
 }
 
 
@@ -197,6 +204,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_99->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_75) {
+        this->ui->lineEdit_37->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_105->setPixmap(tpic);
     }
 }
 
@@ -394,6 +409,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// remap
+    if (btn == this->ui->pushButton_73) {
+        QString srcfile = this->ui->lineEdit_37->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "remap" << srcfile
+            << QString::number(this->ui->horizontalSlider_23->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -473,6 +502,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "hough") {
         QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_100->setPixmap(r1);
+    }
+
+    if (op == "remap") {
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_106->setPixmap(r1);
     }
 
     delete proc;
