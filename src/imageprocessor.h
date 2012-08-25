@@ -35,6 +35,7 @@ private:
     bool sobel_it(QString srcfile);
     bool laplace_it(QString srcfile);
     bool canny_it(QString srcfile);
+    bool hough_it(QString srcfile);
 
 private:
     QStringList margs;
