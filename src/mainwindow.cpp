@@ -92,6 +92,8 @@ void MainWindow::installConnection()
                      this->ui->pushButton_65, SIGNAL(clicked()));
     QObject::connect(this->ui->pushButton_71, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_22, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_71, SIGNAL(clicked()));
 }
 
 
@@ -385,8 +387,8 @@ void MainWindow::onProcessImage()
 
         ImageProcessor  * proc = new ImageProcessor();
         QStringList args;
-        args << "hough" << srcfile;
-            //<< QString::number(this->ui->horizontalSlider_21->value());
+        args << "hough" << srcfile
+            << QString::number(this->ui->horizontalSlider_22->value());
 
         QObject::connect(proc, SIGNAL(finished()),
                          this, SLOT(onImageProcessorDone()));
@@ -469,7 +471,7 @@ void MainWindow:: onImageProcessorDone()
     }
 
     if (op == "hough") {
-        QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_100->setPixmap(r1);
     }
 

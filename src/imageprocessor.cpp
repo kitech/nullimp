@@ -668,8 +668,17 @@ bool ImageProcessor::canny_it(QString srcfile)
 
     return true;
 }
-
 bool ImageProcessor::hough_it(QString srcfile)
+{
+
+    if (this->margs.at(2) == "0") {
+        return this->hough_line_it(srcfile);
+    } else {
+        return this->hough_circle_it(srcfile);
+    }
+}
+
+bool ImageProcessor::hough_line_it(QString srcfile)
 {
     // const char* filename = argc >= 2 ? argv[1] : "pic1.jpg";
 
@@ -712,10 +721,51 @@ bool ImageProcessor::hough_it(QString srcfile)
      }
     #endif
 
-     QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
+     QString resfile = this->get_tpath(srcfile, this->margs.at(0), "line");
      bool bret = imwrite(this->get_cpath(resfile), cdst);
      this->mreses << resfile;
      qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
+
+bool ImageProcessor::hough_circle_it(QString srcfile)
+{
+    Mat src, src_gray;
+
+    /// Read the image
+    // src = imread( argv[1], 1 );
+    src = imread(this->get_cpath(srcfile));
+
+    if( !src.data )
+      { return false; }
+
+    /// Convert it to gray
+    cvtColor( src, src_gray, CV_BGR2GRAY );
+
+    /// Reduce the noise so we avoid false circle detection
+    GaussianBlur( src_gray, src_gray, Size(9, 9), 2, 2 );
+
+    vector<Vec3f> circles;
+
+    /// Apply the Hough Transform to find the circles
+    HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 200, 100, 0, 0 );
+
+    /// Draw the circles detected
+    for( size_t i = 0; i < circles.size(); i++ )
+    {
+        Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+        int radius = cvRound(circles[i][2]);
+        // circle center
+        circle( src, center, 3, Scalar(0,255,0), -1, 8, 0 );
+        // circle outline
+        circle( src, center, radius, Scalar(0,0,255), 3, 8, 0 );
+     }
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "circle");
+    bool bret = imwrite(this->get_cpath(resfile), src);
+    this->mreses << resfile;
+    qLogx()<<bret << resfile << QFileInfo(resfile).size();
 
     return true;
 }

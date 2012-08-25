@@ -1996,16 +1996,16 @@
           <item>
            <widget class="QSlider" name="horizontalSlider_22">
             <property name="maximum">
-             <number>100</number>
+             <number>1</number>
             </property>
             <property name="singleStep">
              <number>1</number>
             </property>
             <property name="pageStep">
-             <number>10</number>
+             <number>1</number>
             </property>
             <property name="value">
-             <number>50</number>
+             <number>1</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>

@@ -36,6 +36,8 @@ private:
     bool laplace_it(QString srcfile);
     bool canny_it(QString srcfile);
     bool hough_it(QString srcfile);
+    bool hough_line_it(QString srcfile);
+    bool hough_circle_it(QString srcfile);
 
 private:
     QStringList margs;
