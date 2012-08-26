@@ -40,6 +40,7 @@ private:
     bool hough_circle_it(QString srcfile);
     bool remap_it(QString srcfile);
     bool affine_it (QString srcfile);
+    bool hist_it (QString srcfile);
 
 
 private:

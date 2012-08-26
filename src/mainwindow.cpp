@@ -63,6 +63,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_77, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_83, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -104,7 +106,8 @@ void MainWindow::installConnection()
                      this->ui->pushButton_73, SIGNAL(clicked()));
     QObject::connect(this->ui->pushButton_79, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
-
+    QObject::connect(this->ui->pushButton_81, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
 }
 
 
@@ -224,6 +227,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_111->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_83) {
+        this->ui->lineEdit_41->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_114->setPixmap(tpic);
     }
 }
 
@@ -449,6 +460,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// hist
+    if (btn == this->ui->pushButton_81) {
+        QString srcfile = this->ui->lineEdit_41->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "hist" << srcfile;
+           // << QString::number(this->ui->horizontalSlider_23->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -540,6 +565,11 @@ void MainWindow:: onImageProcessorDone()
         this->ui->label_112->setPixmap(r1);
         QPixmap r2 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_32->setPixmap(r2);
+    }
+
+    if (op == "hist") {
+        QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
+        this->ui->label_115->setPixmap(r1);
     }
 
     delete proc;

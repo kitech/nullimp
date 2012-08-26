@@ -82,6 +82,9 @@ void ImageProcessor::run()
     } else if (op == "affine") {
         src1 = args.at(1);
         this->affine_it(src1);
+    } else if (op == "hist") {
+        src1 = args.at(1);
+        this->hist_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -907,6 +910,34 @@ bool ImageProcessor::affine_it(QString srcfile)
     bret = imwrite(this->get_cpath(resfile), warp_rotate_dst);
     this->mreses << resfile;
     qLogx()<<bret << resfile << QFileInfo(resfile).size();
+
+    return true;
+}
+
+bool ImageProcessor::hist_it(QString srcfile)
+{
+    Mat src, dst;
+
+    char* source_window = "Source image";
+    char* equalized_window = "Equalized Image";
+
+    /// Load image
+    // src = imread( argv[1], 1 );
+    src = imread(this->get_cpath(srcfile), 1);
+
+    if( !src.data )
+      { // cout<<"Usage: ./Histogram_Demo <path_to_image>"<<endl;
+        return false;}
+
+    /// Convert to grayscale
+    cvtColor( src, src, CV_BGR2GRAY );
+
+    /// Apply Histogram Equalization
+    equalizeHist( src, dst );
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "");
+    bool bret = imwrite(this->get_cpath(resfile), dst);
+    this->mreses << resfile;
 
     return true;
 }
