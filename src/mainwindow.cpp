@@ -61,6 +61,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_75, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_77, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -100,6 +102,8 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_23, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_73, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_79, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
 
 }
 
@@ -212,6 +216,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_105->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_77) {
+        this->ui->lineEdit_39->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_111->setPixmap(tpic);
     }
 }
 
@@ -423,6 +435,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// affine
+    if (btn == this->ui->pushButton_79) {
+        QString srcfile = this->ui->lineEdit_39->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "affine" << srcfile;
+           // << QString::number(this->ui->horizontalSlider_23->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -507,6 +533,13 @@ void MainWindow:: onImageProcessorDone()
     if (op == "remap") {
         QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_106->setPixmap(r1);
+    }
+
+    if (op == "affine") {
+        QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
+        this->ui->label_112->setPixmap(r1);
+        QPixmap r2 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_32->setPixmap(r2);
     }
 
     delete proc;
