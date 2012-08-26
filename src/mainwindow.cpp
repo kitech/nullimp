@@ -65,6 +65,14 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_83, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    /////////////
+    QObject::connect(this->ui->pushButton_21, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_22, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_23, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    ////////////////
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -110,6 +118,8 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_25, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_81, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_85, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
 }
 
 
@@ -238,6 +248,30 @@ void MainWindow::onSelectSrc()
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_114->setPixmap(tpic);
     }
+
+    /////////////
+    if (btn == this->ui->pushButton_21) {
+        this->ui->lineEdit_11->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_119->setPixmap(tpic);
+    }
+    if (btn == this->ui->pushButton_22) {
+        this->ui->lineEdit_12->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_33->setPixmap(tpic);
+    }
+    if (btn == this->ui->pushButton_23) {
+        this->ui->lineEdit_15->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_34->setPixmap(tpic);
+    }
+    //////////////////
 }
 
 void MainWindow::onProcessImage()
@@ -476,6 +510,22 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// comp hist
+    if (btn == this->ui->pushButton_85) {
+        QString src1file = this->ui->lineEdit_11->text();
+        QString src2file = this->ui->lineEdit_12->text();
+        QString src3file = this->ui->lineEdit_15->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "comphist" << src1file << src2file << src3file;
+            // << QString::number(this->ui->horizontalSlider_25->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -572,6 +622,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "hist") {
         QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_115->setPixmap(r1);
+    }
+
+    if (op == "comphist") {
+        QString rs = reses.at(4);
+        this->ui->textEdit->setText(rs);
     }
 
     delete proc;
