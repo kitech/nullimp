@@ -2488,20 +2488,20 @@
             <item>
              <widget class="QLabel" name="label_113">
               <property name="text">
-               <string>kernal size :::::: </string>
+               <string>type: 0=calc, 1=equal</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QSlider" name="horizontalSlider_25">
               <property name="maximum">
-               <number>100</number>
+               <number>1</number>
               </property>
               <property name="singleStep">
                <number>1</number>
               </property>
               <property name="pageStep">
-               <number>10</number>
+               <number>1</number>
               </property>
               <property name="value">
                <number>1</number>

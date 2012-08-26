@@ -41,7 +41,8 @@ private:
     bool remap_it(QString srcfile);
     bool affine_it (QString srcfile);
     bool hist_it (QString srcfile);
-
+    bool hist_equal_it(QString srcfile);
+    bool hist_calc_it(QString srcfile);
 
 private:
     QStringList margs;
