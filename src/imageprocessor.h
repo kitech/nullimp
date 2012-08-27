@@ -44,6 +44,7 @@ private:
     bool hist_equal_it(QString srcfile);
     bool hist_calc_it(QString srcfile);
     bool comp_hist_it(QString src1file, QString src2file, QString src3file);
+    bool back_projection_it (QString srcfile);
 
 private:
     QStringList margs;

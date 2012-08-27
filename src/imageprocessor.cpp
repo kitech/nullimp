@@ -90,6 +90,9 @@ void ImageProcessor::run()
         src2 = args.at(2);
         src3 = args.at(3);
         this->comp_hist_it(src1, src2, src3);
+    } else if (op == "backproj") {
+        src1 = args.at(1);
+        this->back_projection_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -1103,6 +1106,61 @@ bool ImageProcessor::comp_hist_it(QString src1file, QString src2file, QString sr
     QString resall = resstrs.join("\n");
     // bool bret = imwrite(this->get_cpath(resfile), histImage);
     this->mreses << resall;
+
+    return true;
+}
+
+bool ImageProcessor::back_projection_it(QString srcfile)
+{
+    /// Global Variables
+    Mat src; Mat hsv; Mat hue;
+    int bins = 25;
+
+    /// Read the image
+    // src = imread( argv[1], 1 );
+    src = imread(this->get_cpath(srcfile), 1);
+    /// Transform it to HSV
+    cvtColor( src, hsv, CV_BGR2HSV );
+
+    /// Use only the Hue value
+    hue.create( hsv.size(), hsv.depth() );
+    int ch[] = { 0, 0 };
+    mixChannels( &hsv, 1, &hue, 1, ch, 1 );
+
+    bins = this->margs.at(2).toInt();
+
+    MatND hist;
+    int histSize = MAX( bins, 2 );
+    float hue_range[] = { 0, 180 };
+    const float* ranges = { hue_range };
+
+    /// Get the Histogram and normalize it
+    calcHist( &hue, 1, 0, Mat(), hist, 1, &histSize, &ranges, true, false );
+    normalize( hist, hist, 0, 255, NORM_MINMAX, -1, Mat() );
+
+    /// Get Backprojection
+    MatND backproj;
+    calcBackProject( &hue, 1, 0, hist, backproj, &ranges, 1, true );
+
+    /// Draw the backproj
+    // imshow( "BackProj", backproj );
+
+    /// Draw the histogram
+    int w = 400; int h = 400;
+    int bin_w = cvRound( (double) w / histSize );
+    Mat histImg = Mat::zeros( w, h, CV_8UC3 );
+
+    for( int i = 0; i < bins; i ++ )
+       { rectangle( histImg, Point( i*bin_w, h ), Point( (i+1)*bin_w, h - cvRound( hist.at<float>(i)*h/255.0 ) ), Scalar( 0, 0, 255 ), -1 ); }
+
+    // imshow( "Histogram", histImg );
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "hist");
+    bool bret = imwrite(this->get_cpath(resfile), histImg);
+    this->mreses << resfile;
+    resfile = this->get_tpath(srcfile, this->margs.at(0), "back");
+    bret = imwrite(this->get_cpath(resfile), backproj);
+    this->mreses << resfile;
 
     return true;
 }

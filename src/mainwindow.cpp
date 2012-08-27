@@ -73,6 +73,8 @@ void MainWindow::installConnection()
     QObject::connect(this->ui->pushButton_23, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
     ////////////////
+    QObject::connect(this->ui->pushButton_89, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -120,6 +122,10 @@ void MainWindow::installConnection()
                      this->ui->pushButton_81, SIGNAL(clicked()));
     QObject::connect(this->ui->pushButton_85, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_87, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_26, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_87, SIGNAL(clicked()));
 }
 
 
@@ -272,6 +278,14 @@ void MainWindow::onSelectSrc()
         this->ui->label_34->setPixmap(tpic);
     }
     //////////////////
+
+    if (btn == this->ui->pushButton_89) {
+        this->ui->lineEdit_43->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_120->setPixmap(tpic);
+    }
 }
 
 void MainWindow::onProcessImage()
@@ -526,6 +540,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// back proj
+    if (btn == this->ui->pushButton_87) {
+        QString srcfile = this->ui->lineEdit_43->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "backproj" << srcfile
+             << QString::number(this->ui->horizontalSlider_26->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -627,6 +655,13 @@ void MainWindow:: onImageProcessorDone()
     if (op == "comphist") {
         QString rs = reses.at(4);
         this->ui->textEdit->setText(rs);
+    }
+
+    if (op == "backproj") {
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(300);
+        this->ui->label_123->setPixmap(r1);
+        QPixmap r2 = QPixmap(reses.at(4)).scaledToWidth(300);
+        this->ui->label_36->setPixmap(r2);
     }
 
     delete proc;
