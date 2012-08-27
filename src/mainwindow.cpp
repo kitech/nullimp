@@ -75,6 +75,10 @@ void MainWindow::installConnection()
     ////////////////
     QObject::connect(this->ui->pushButton_89, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_95, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_96, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -126,6 +130,10 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_26, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_87, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_91, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_27, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_91, SIGNAL(clicked()));
 }
 
 
@@ -285,6 +293,22 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_120->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_95) {
+        this->ui->lineEdit_47->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(400);
+        this->ui->label_127->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_96) {
+        this->ui->lineEdit_48->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(100);
+        this->ui->label_128->setPixmap(tpic);
     }
 }
 
@@ -554,6 +578,21 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// template match
+    if (btn == this->ui->pushButton_91) {
+        QString src1file = this->ui->lineEdit_47->text();
+        QString src2file = this->ui->lineEdit_48->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "tplmatch" << src1file << src2file
+             << QString::number(this->ui->horizontalSlider_27->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -662,6 +701,13 @@ void MainWindow:: onImageProcessorDone()
         this->ui->label_123->setPixmap(r1);
         QPixmap r2 = QPixmap(reses.at(4)).scaledToWidth(300);
         this->ui->label_36->setPixmap(r2);
+    }
+
+    if (op == "tplmatch") {
+        QPixmap r1 = QPixmap(reses.at(4)).scaledToWidth(300);
+        this->ui->label_37->setPixmap(r1);
+        QPixmap r2 = QPixmap(reses.at(5)).scaledToWidth(300);
+        this->ui->label_41->setPixmap(r2);
     }
 
     delete proc;
