@@ -79,6 +79,9 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_96, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_97, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -134,6 +137,10 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_27, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_91, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_93, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_28, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_93, SIGNAL(clicked()));
 }
 
 
@@ -309,6 +316,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(100);
         this->ui->label_128->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_97) {
+        this->ui->lineEdit_45->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_132->setPixmap(tpic);
     }
 }
 
@@ -593,6 +608,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// find contours
+    if (btn == this->ui->pushButton_93) {
+        QString srcfile = this->ui->lineEdit_45->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "contours" << srcfile
+             << QString::number(this->ui->horizontalSlider_28->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -708,6 +737,11 @@ void MainWindow:: onImageProcessorDone()
         this->ui->label_37->setPixmap(r1);
         QPixmap r2 = QPixmap(reses.at(5)).scaledToWidth(300);
         this->ui->label_41->setPixmap(r2);
+    }
+
+    if (op == "contours") {
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_133->setPixmap(r1);
     }
 
     delete proc;

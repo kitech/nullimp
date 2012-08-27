@@ -46,6 +46,7 @@ private:
     bool comp_hist_it(QString src1file, QString src2file, QString src3file);
     bool back_projection_it (QString srcfile);
     bool template_match_it(QString src1file, QString src2file);
+    bool find_contous_it (QString srcfile);
 
 private:
     QStringList margs;
