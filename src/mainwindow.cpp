@@ -81,6 +81,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_97, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_101, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
@@ -141,6 +143,10 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_28, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_93, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_99, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_29, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_99, SIGNAL(clicked()));
 }
 
 
@@ -324,6 +330,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_132->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_101) {
+        this->ui->lineEdit_49->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_137->setPixmap(tpic);
     }
 }
 
@@ -622,6 +636,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// find convexhull
+    if (btn == this->ui->pushButton_99) {
+        QString srcfile = this->ui->lineEdit_49->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "hull" << srcfile
+             << QString::number(this->ui->horizontalSlider_29->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -742,6 +770,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "contours") {
         QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_133->setPixmap(r1);
+    }
+
+    if (op == "hull") {
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_138->setPixmap(r1);
     }
 
     delete proc;
