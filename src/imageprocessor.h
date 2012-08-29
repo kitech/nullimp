@@ -47,7 +47,8 @@ private:
     bool back_projection_it (QString srcfile);
     bool template_match_it(QString src1file, QString src2file);
     bool find_contous_it (QString srcfile);
-    bool find_convexhull_it (QString srcfile);
+    bool find_convexhull_it  (QString srcfile);
+    bool find_box_circle_it  (QString srcfile);
 
 private:
     QStringList margs;
