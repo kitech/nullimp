@@ -89,6 +89,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_113, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_117, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -164,6 +166,8 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_32, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_111, SIGNAL(clicked()));
+    QObject::connect(this->ui->pushButton_115, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
 }
 
 
@@ -379,6 +383,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_152->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_117) {
+        this->ui->lineEdit_57->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_157->setPixmap(tpic);
     }
 }
 
@@ -733,6 +745,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// polygon
+    if (btn == this->ui->pushButton_115) {
+        QString srcfile = this->ui->lineEdit_57->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "polygon" << srcfile;
+           //  << QString::number(this->ui->horizontalSlider_32->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -873,6 +899,14 @@ void MainWindow:: onImageProcessorDone()
     if (op == "moment") {
         QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_153->setPixmap(r1);
+    }
+
+    if (op == "polygon") {
+        QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
+        this->ui->label_158->setPixmap(r1);
+
+        QPixmap r2 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_157->setPixmap(r2);
     }
 
     delete proc;
