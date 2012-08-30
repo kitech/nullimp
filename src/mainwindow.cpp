@@ -87,6 +87,8 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_109, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_113, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
@@ -158,7 +160,10 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->horizontalSlider_31, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_107, SIGNAL(clicked()));
-
+    QObject::connect(this->ui->pushButton_111, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->horizontalSlider_32, SIGNAL(valueChanged(int)),
+                     this->ui->pushButton_111, SIGNAL(clicked()));
 }
 
 
@@ -366,6 +371,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_147->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_113) {
+        this->ui->lineEdit_55->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_152->setPixmap(tpic);
     }
 }
 
@@ -706,6 +719,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// moment
+    if (btn == this->ui->pushButton_111) {
+        QString srcfile = this->ui->lineEdit_55->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "moment" << srcfile
+             << QString::number(this->ui->horizontalSlider_32->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -841,6 +868,11 @@ void MainWindow:: onImageProcessorDone()
     if (op == "boxellipse") {
         QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_148->setPixmap(r1);
+    }
+
+    if (op == "moment") {
+        QPixmap r1 = QPixmap(reses.at(3)).scaledToWidth(500);
+        this->ui->label_153->setPixmap(r1);
     }
 
     delete proc;
