@@ -22,7 +22,8 @@ public slots:
     void onProcessImage();
     void onImageProcessorDone();
 
-
+private:
+    void test1();
 
 private:
     Ui::MainWindow *ui;

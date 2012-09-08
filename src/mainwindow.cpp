@@ -5,6 +5,8 @@
 
 #include <QtGui>
 
+#include <opencv/cv.h>
+
 #include "simplelog.h"
 
 #include "mainwindow.h"
@@ -26,13 +28,43 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     this->installConnection();
+
+    /////////test
+    this->test1();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+/////////////test
+void MainWindow::test1()
+{
+    cv::Mat  oimg;
 
+    for (int  i = 1; i < 4; i ++) {
+        // oimg = cv::Mat(i, i, CV_8UC1);
+        oimg = cv::Mat::eye(i, i, CV_8UC1);
+        std::cout  <<oimg << std::endl;
+        qLogx() << oimg.size().width <<oimg.size().height <<oimg.step <<oimg.channels()
+                <<*oimg.refcount  << oimg.elemSize() << oimg.total();
+    }
+
+    for (int  i = 1; i < 4; i ++) {
+        oimg = cv::Mat(i, i, CV_8UC2);
+
+        std::cout  <<oimg << std::endl;
+        qLogx() << oimg.size().width <<oimg.size().height <<oimg.step
+                <<oimg.channels() << oimg.elemSize() << oimg.total() ;
+    }
+
+    std::cout << "eeennnnnnnnnnnnn???" <<std::endl;
+    qLogx() <<"whereeeeeeeeeee?";
+
+    //cv::DateType<float> a;
+}
+
+/////////////////////////
 void MainWindow::installConnection()
 {
     QObject::connect(this->ui->pushButton_3, SIGNAL(clicked()),
