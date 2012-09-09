@@ -3,6 +3,8 @@
  *
  */
 
+#include <algorithm>
+
 #include <QtGui>
 
 #include <opencv/cv.h>
@@ -37,31 +39,82 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+#include <opencv2/opencv.hpp>
+#include <opencv2/nonfree/features2d.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/stitching/stitcher.hpp>
+#include <opencv2/ml/ml.hpp>
+#include <opencv2/contrib/contrib.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
+
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/legacy/legacy.hpp>
+#include <opencv2/legacy/compat.hpp>
+#include <opencv2/flann/flann.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/nonfree/features2d.hpp>
+#include <opencv2/nonfree/nonfree.hpp>
+
 /////////////test
 void MainWindow::test1()
 {
     cv::Mat  oimg;
 
+
     for (int  i = 1; i < 4; i ++) {
         // oimg = cv::Mat(i, i, CV_8UC1);
         oimg = cv::Mat::eye(i, i, CV_8UC1);
         std::cout  <<oimg << std::endl;
-        qLogx() << oimg.size().width <<oimg.size().height <<oimg.step <<oimg.channels()
-                <<*oimg.refcount  << oimg.elemSize() << oimg.total();
+        qLogx() << "w="<<oimg.size().width << "h=" << oimg.size().height << "step=" << oimg.step <<"chan="<< oimg.channels()
+                <<"refcnt="<<*oimg.refcount  << "elemsize=" << oimg.elemSize() << "tlen?="<< oimg.total();
     }
 
     for (int  i = 1; i < 4; i ++) {
         oimg = cv::Mat(i, i, CV_8UC2);
 
         std::cout  <<oimg << std::endl;
-        qLogx() << oimg.size().width <<oimg.size().height <<oimg.step
-                <<oimg.channels() << oimg.elemSize() << oimg.total() ;
+        qLogx() << "w="<<oimg.size().width << "h=" << oimg.size().height << "step=" << oimg.step <<"chan="<< oimg.channels()
+                <<"refcnt="<<*oimg.refcount  << "elemsize=" << oimg.elemSize() << "tlen?="<< oimg.total();
     }
 
     std::cout << "eeennnnnnnnnnnnn???" <<std::endl;
     qLogx() <<"whereeeeeeeeeee?";
 
     //cv::DateType<float> a;
+    std::vector<std::string> algo_list;
+
+    cv::Algorithm::getList(algo_list);
+
+    std::copy(algo_list.begin(), algo_list.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+    qLogx()<<"algo count:" << algo_list.size();
+
+    cv::SIFT fda;
+    cv::SURF fdb;
+    qLogx() << fda.descriptorSize() << fdb.descriptorSize();
+
+    cv::AlgorithmInfo *sift_info = fda.info();
+    cv::AlgorithmInfo *surf_info = fdb.info();
+    qLogx()<< sift_info->name().c_str() << surf_info->name().c_str();
+
+     cv::Mat  i81, desc;
+     i81 = cv::Mat(1, 1, CV_8UC1);
+     i81 = cv::Mat::zeros(1, 1, CV_8UC1);
+
+    std::vector<cv::KeyPoint>  sift_kps;
+
+    oimg = cv::imread("/home/gzleo/dlnk/Hull_Original_Image.jpg", 1);
+    // fda.operator ()(oimg, i81, sift_kps, desc, false);
+    fda.operator ()(oimg, cv::noArray(), sift_kps, desc, false);
+    std::cout << sift_kps.size() << desc <<std::endl ;
+    cv::KeyPoint kp1;
+
+    for (int i = 0; i < sift_kps.size(); i ++) {
+        kp1 = sift_kps.at(i);
+        qLogx()<<i << kp1.size <<kp1.hash() << kp1.class_id << kp1.octave << kp1.response ;
+    }
 }
 
 /////////////////////////
