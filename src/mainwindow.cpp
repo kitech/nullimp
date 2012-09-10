@@ -115,6 +115,8 @@ void MainWindow::test1()
         kp1 = sift_kps.at(i);
         qLogx()<<i << kp1.size <<kp1.hash() << kp1.class_id << kp1.octave << kp1.response ;
     }
+
+    // cvHaarDetectObjects()
 }
 
 /////////////////////////
@@ -175,6 +177,8 @@ void MainWindow::installConnection()
     QObject::connect(this->ui->pushButton_113, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_117, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_121, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
 
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
@@ -252,6 +256,8 @@ void MainWindow::installConnection()
     QObject::connect(this->ui->horizontalSlider_32, SIGNAL(valueChanged(int)),
                      this->ui->pushButton_111, SIGNAL(clicked()));
     QObject::connect(this->ui->pushButton_115, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_119, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
 }
 
@@ -476,6 +482,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_157->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_121) {
+        this->ui->lineEdit_59->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_161->setPixmap(tpic);
     }
 }
 
@@ -844,6 +858,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    ///// haar
+    if (btn == this->ui->pushButton_119) {
+        QString srcfile = this->ui->lineEdit_59->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "haar" << srcfile;
+           //  << QString::number(this->ui->horizontalSlider_32->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -993,6 +1021,12 @@ void MainWindow:: onImageProcessorDone()
         QPixmap r2 = QPixmap(reses.at(3)).scaledToWidth(500);
         this->ui->label_157->setPixmap(r2);
     }
+
+    if (op == "haar") {
+        QPixmap r1 = QPixmap(reses.at(2)).scaledToWidth(500);
+        this->ui->label_162->setPixmap(r1);
+    }
+
 
     delete proc;
 }

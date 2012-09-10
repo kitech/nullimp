@@ -7,6 +7,9 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include "opencv/cv.h"
+#include "opencv2/nonfree/nonfree.hpp"
+
 #include "simplelog.h"
 #include "imageprocessor.h"
 
@@ -115,6 +118,9 @@ void ImageProcessor::run()
     } else if (op == "polygon") {
         src1 = args.at(1);
         this->polygon_it(src1);
+    } else if (op == "haar") {
+        src1 = args.at(1);
+        this->haar_it(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -1653,6 +1659,135 @@ bool ImageProcessor::polygon_it(QString srcfile)
     resfile = this->get_tpath(srcfile, this->margs.at(0), "src");
     bret = imwrite(this->get_cpath(resfile), src);
     this->mreses << resfile;
+
+    return true;
+}
+
+bool ImageProcessor::haar_it(QString srcfile)
+{
+    return this->haar_it_cpp(srcfile);
+    ///////////// c-mode????????
+    CvMemStorage* storage = 0;
+    CvHaarClassifierCascade* cascade = 0;
+    Mat dest;
+    IplImage*src, *gray, *small_img;
+    bool bret;
+    double scale = 1.3;
+
+    CvScalar colors[] =
+    {
+        {{0,0,255}},
+        {{0,128,255}},
+        {{0,255,255}},
+        {{0,255,0}},
+        {{255,128,0}},
+        {{255,255,0}},
+        {{255,0,0}},
+        {{255,0,255}}
+    };
+
+    // cascade = new CascadeClassifier();
+    // bret = cascade->load("/usr/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml");
+    cascade = (CvHaarClassifierCascade*)cvLoad("/usr/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml");
+    qLogx()<<bret;
+
+    storage = cvCreateMemStorage(0);
+
+    // src = imread(this->get_cpath(srcfile), 1);
+    src = cvLoadImage(this->get_cpath(srcfile), 1);
+
+    // gray = Mat(src.rows, src.cols, CV_8UC1);
+    // small_img = Mat(cvRound(src.rows/scale), cvRound(src.cols/1.3), CV_8UC1);
+    gray = cvCreateImage( cvSize(src->width, src->height), 8, 1 );
+    small_img = cvCreateImage( cvSize( cvRound (src->width/scale),
+                                       cvRound (src->height/scale)),
+                               8, 1 );
+
+    /////
+    cvCvtColor(src, gray, CV_BGR2GRAY);
+    cvResize(gray, small_img, CV_INTER_LINEAR);
+    cvEqualizeHist(small_img, small_img);
+    cvClearMemStorage(storage);
+
+    CvSeq * faces = 0;
+    faces = cvHaarDetectObjects(small_img, cascade, storage);
+
+    for( int i = 0; i < (faces ? faces->total : 0); i++ )
+    {
+        CvRect* r = (CvRect*)cvGetSeqElem( faces, i );
+        CvPoint center;
+        int radius;
+        center.x = cvRound((r->x + r->width*0.5)*scale);
+        center.y = cvRound((r->y + r->height*0.5)*scale);
+        radius = cvRound((r->width + r->height)*0.25*scale);
+        cvCircle( src, center, radius, colors[i%8], 3, 8, 0 );
+    }
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "src");
+    // bret = imwrite(this->get_cpath(resfile), src);
+    cvSaveImage(this->get_cpath(resfile), src);
+    this->mreses << resfile;
+
+    return true;
+}
+
+/*
+ * 相比 haar_it (C版本的）效率更高，准确度更高
+ */
+bool ImageProcessor::haar_it_cpp(QString srcfile)
+{
+    Mat src, gray, small_img;
+    cv::CascadeClassifier *cascade;
+    bool bret;
+    double scale = 1.3;
+
+    CvScalar colors[] =
+    {
+        {{0,0,255}},
+        {{0,128,255}},
+        {{0,255,255}},
+        {{0,255,0}},
+        {{255,128,0}},
+        {{255,255,0}},
+        {{255,0,0}},
+        {{255,0,255}}
+    };
+
+    cascade = new cv::CascadeClassifier();
+    bret = cascade->load("/usr/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml");
+    qLogx()<< bret << cascade->empty() ;
+
+    src = imread(this->get_cpath(srcfile), 1);
+
+    cv::cvtColor(src, gray, CV_RGB2GRAY);
+
+    small_img = Mat(cvRound(src.rows / scale), cvRound(src.cols / scale), CV_8UC1);
+    Size smallImgSize = small_img.size();
+
+    resize(gray, small_img, smallImgSize, 0, 0, INTER_LINEAR);
+    equalizeHist(small_img, small_img);
+
+    vector<Rect> faces;
+    cascade->detectMultiScale(small_img, faces, 1.1, 2, CV_HAAR_SCALE_IMAGE, Size(30, 30));
+
+    for( int i = 0; i < faces.size(); i++ )
+    {
+        cv::Rect r = faces.at(i);
+        cv::Point center;
+        int radius;
+        center.x = cvRound((r.x + r.width*0.5)*scale);
+        center.y = cvRound((r.y + r.height*0.5)*scale);
+        radius = cvRound((r.width + r.height)*0.25*scale);
+        // cvCircle( src, center, radius, colors[i%8], 3, 8, 0 );
+        cv::circle(src, center, radius, colors[i%8], 3, 8, 0);
+    }
+
+    QString resfile = this->get_tpath(srcfile, this->margs.at(0), "gray");
+    bret = imwrite(this->get_cpath(resfile), src);
+    // cvSaveImage(this->get_cpath(resfile), src);
+    this->mreses << resfile;
+
+    delete cascade;
 
     return true;
 }

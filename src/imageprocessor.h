@@ -52,6 +52,10 @@ private:
     bool find_box_ellipse_it (QString srcfile);
     bool moment_it (QString srcfile);
     bool polygon_it (QString srcfile);
+    bool haar_it_cpp(QString srcfile);
+
+    ///////////
+    bool haar_it(QString srcfile);
 
 private:
     QStringList margs;
