@@ -10,6 +10,8 @@
 #include "opencv/cv.h"
 #include "opencv2/nonfree/nonfree.hpp"
 
+#include "GraphicsMagick/wand/wand_api.h"
+
 #include "simplelog.h"
 #include "imageprocessor.h"
 
@@ -121,6 +123,9 @@ void ImageProcessor::run()
     } else if (op == "haar") {
         src1 = args.at(1);
         this->haar_it(src1);
+    } else if (op == "bc_gm_resize") {
+        src1 = args.at(1);
+        this->bc_gm_thumb(src1);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -1789,5 +1794,33 @@ bool ImageProcessor::haar_it_cpp(QString srcfile)
 
     delete cascade;
 
+    return true;
+}
+
+bool ImageProcessor:: bc_gm_thumb(QString srcfile)
+{
+    MagickWand *mw1 = NULL, *mw2 = NULL;
+    MagickWand *mwc[1000] = {0};
+
+    mw1 = NewMagickWand();
+    int iret = MagickReadImage(mw1, this->get_cpath(srcfile));
+
+    for (int i =0; i < 100; i++) {
+        mw2 = CloneMagickWand(mw1);
+        mwc[i] = mw2;
+    }
+    qLogx()<<"copies done."<<QDateTime::currentDateTime();
+
+    QDateTime begin_time = QDateTime::currentDateTime();
+    for (int i = 0; i < 100; i++) {
+        iret = ::MagickScaleImage(mwc[i], 100, 80);
+    }
+    QDateTime end_time = QDateTime::currentDateTime();
+    qLogx()<<"eclapse: " << begin_time.msecsTo(end_time) << " = " << begin_time.msecsTo(end_time) / 100.0 << "/s";
+
+    ::DestroyMagickWand(mw1);
+    this->mreses << "done";
+
+    // 测试结果，大概100次resize操作使用2秒，也就是每次操作使用0.02秒，20毫秒。也不算快。
     return true;
 }

@@ -57,6 +57,9 @@ private:
     ///////////
     bool haar_it(QString srcfile);
 
+    ///// bench
+    bool bc_gm_thumb(QString srcfile);
+
 private:
     QStringList margs;
     QStringList mreses;

@@ -30,4 +30,4 @@ HEADERS  += ./src/mainwindow.h \
 FORMS    += uis/mainwindow.ui
 
 unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += opencv
+unix: PKGCONFIG += opencv GraphicsMagick GraphicsMagick++ GraphicsMagickWand

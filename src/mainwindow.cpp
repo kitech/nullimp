@@ -180,7 +180,11 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_121, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_125, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
+
+    ///// 处理图片事件
     QObject::connect(this->ui->pushButton, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_5, SIGNAL(clicked()),
@@ -258,6 +262,8 @@ void MainWindow::installConnection()
     QObject::connect(this->ui->pushButton_115, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_119, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_123, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
 }
 
@@ -490,6 +496,14 @@ void MainWindow::onSelectSrc()
         QPixmap pic(srcfile);
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_161->setPixmap(tpic);
+    }
+
+    if (btn == this->ui->pushButton_125) {
+        this->ui->lineEdit_61->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(500);
+        this->ui->label_165->setPixmap(tpic);
     }
 }
 
@@ -872,6 +886,20 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    // bench
+    if (btn == this->ui->pushButton_123) {
+        QString srcfile = this->ui->lineEdit_61->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "bc_gm_resize" << srcfile;
+           //  << QString::number(this->ui->horizontalSlider_32->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -1027,6 +1055,9 @@ void MainWindow:: onImageProcessorDone()
         this->ui->label_162->setPixmap(r1);
     }
 
+    if (op == "bc_gm_resize") {
+        qLogx()<<"done.";
+    }
 
     delete proc;
 }
