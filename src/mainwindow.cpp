@@ -117,6 +117,18 @@ void MainWindow::test1()
     }
 
     // cvHaarDetectObjects()
+    int minHessian = 400;
+    cv::SurfFeatureDetector detector( minHessian );
+    std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
+    std::vector<cv:: DMatch > good_matches;
+    cv::SiftFeatureDetector sift_detector;
+    cv::FastFeatureDetector fast_detector;
+
+    cv::FlannBasedMatcher matcher;
+    cv::FernDescriptorMatcher fern_matcher;
+
+    cv::SurfDescriptorExtractor extractor;
+
 }
 
 /////////////////////////
