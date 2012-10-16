@@ -21,7 +21,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>26</number>
+       <number>27</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -4280,7 +4280,10 @@
       </widget>
       <widget class="QWidget" name="tab_27">
        <attribute name="title">
-        <string>页</string>
+        <string>bcgmr</string>
+       </attribute>
+       <attribute name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;测试graphicsmagick的resize效率&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_39">
         <item>
@@ -4414,6 +4417,209 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_28">
+       <attribute name="title">
+        <string>surfdt</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_41">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_40">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_126">
+            <item>
+             <widget class="QPushButton" name="pushButton_127">
+              <property name="text">
+               <string>process it</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_128">
+              <property name="text">
+               <string>stop it</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QSplitter" name="splitter_9">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <widget class="QWidget" name="layoutWidget_3">
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_32">
+                <item>
+                 <widget class="QLineEdit" name="lineEdit_17"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_30">
+                  <property name="text">
+                   <string>select 1</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_33">
+                <item>
+                 <widget class="QLineEdit" name="lineEdit_18"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_31">
+                  <property name="text">
+                   <string>select 2</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_170">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>oimg</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_44">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_34">
+                <item>
+                 <widget class="QLineEdit" name="lineEdit_19"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_32">
+                  <property name="text">
+                   <string>select 3</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_35">
+                <item>
+                 <widget class="QLineEdit" name="lineEdit_20"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_33">
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_45">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLabel" name="label_46">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="layoutWidget_32">
+             <layout class="QGridLayout" name="gridLayout_33">
+              <item row="0" column="0">
+               <widget class="QTextEdit" name="textEdit_2"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_125">
+            <item>
+             <widget class="QLabel" name="label_156">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>oinfo:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_169">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>ninfo:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -4424,7 +4630,7 @@
      <x>0</x>
      <y>0</y>
      <width>851</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->installConnection();
 
     /////////test
-    this->test1();
+    // this->test1();
 }
 
 MainWindow::~MainWindow()
@@ -194,6 +194,13 @@ void MainWindow::installConnection()
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_125, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
+    //surfex
+    QObject::connect(this->ui->pushButton_30, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_31, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_32, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
 
 
     ///// 处理图片事件
@@ -277,6 +284,9 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_123, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
+    QObject::connect(this->ui->pushButton_127, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
+
 }
 
 
@@ -517,6 +527,31 @@ void MainWindow::onSelectSrc()
         QPixmap tpic  = pic.scaledToWidth(500);
         this->ui->label_165->setPixmap(tpic);
     }
+
+    // surfdt
+    if (btn == this->ui->pushButton_30) {
+        this->ui->lineEdit_17->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_170->setPixmap(tpic);
+    }
+    if (btn == this->ui->pushButton_31) {
+        this->ui->lineEdit_18->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_44->setPixmap(tpic);
+    }
+    if (btn == this->ui->pushButton_32) {
+        this->ui->lineEdit_19->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_45->setPixmap(tpic);
+    }
+
+    // surfex
 }
 
 void MainWindow::onProcessImage()
@@ -912,6 +947,22 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    // surfdt
+    if (btn == this->ui->pushButton_127) {
+        QString src1file = this->ui->lineEdit_30->text();
+        QString src2file = this->ui->lineEdit_31->text();
+        QString src3file = this->ui->lineEdit_32->text();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "surfdt" << src1file << src2file << src3file;
+            // << QString::number(this->ui->horizontalSlider_25->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -1069,6 +1120,11 @@ void MainWindow:: onImageProcessorDone()
 
     if (op == "bc_gm_resize") {
         qLogx()<<"done.";
+    }
+
+    if (op == "surfdt") {
+        QString rs = reses.at(4);
+        this->ui->textEdit_2->setText(rs);
     }
 
     delete proc;

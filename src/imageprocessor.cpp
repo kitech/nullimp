@@ -126,6 +126,11 @@ void ImageProcessor::run()
     } else if (op == "bc_gm_resize") {
         src1 = args.at(1);
         this->bc_gm_thumb(src1);
+    } else if (op == "surfdt") {
+        src1 = args.at(1);
+        src2 = args.at(2);
+        src3 = args.at(3);
+        this->surf_detect_it(src1, src2, src3);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -1822,5 +1827,11 @@ bool ImageProcessor:: bc_gm_thumb(QString srcfile)
     this->mreses << "done";
 
     // 测试结果，大概100次resize操作使用2秒，也就是每次操作使用0.02秒，20毫秒。也不算快。
+    return true;
+}
+
+bool ImageProcessor::surf_detect_it(QString src1file, QString src2file, QString src3file)
+{
+
     return true;
 }

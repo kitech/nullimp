@@ -60,6 +60,9 @@ private:
     ///// bench
     bool bc_gm_thumb(QString srcfile);
 
+    //
+    bool surf_detect_it(QString src1file, QString src2file, QString src3file);
+
 private:
     QStringList margs;
     QStringList mreses;
