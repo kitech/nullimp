@@ -950,9 +950,9 @@ void MainWindow::onProcessImage()
 
     // surfdt
     if (btn == this->ui->pushButton_127) {
-        QString src1file = this->ui->lineEdit_30->text();
-        QString src2file = this->ui->lineEdit_31->text();
-        QString src3file = this->ui->lineEdit_32->text();
+        QString src1file = this->ui->lineEdit_17->text();
+        QString src2file = this->ui->lineEdit_18->text();
+        QString src3file = this->ui->lineEdit_19->text();
 
         ImageProcessor  * proc = new ImageProcessor();
         QStringList args;

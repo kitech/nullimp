@@ -1832,6 +1832,44 @@ bool ImageProcessor:: bc_gm_thumb(QString srcfile)
 
 bool ImageProcessor::surf_detect_it(QString src1file, QString src2file, QString src3file)
 {
+    Mat src_base, hsv_base;
+    Mat src_test1, hsv_test1;
+    Mat src_test2, hsv_test2;
+    Mat hsv_half_down;
+
+    /// Load three images with different environment settings
+//    if( argc < 4 )
+//      { printf("** Error. Usage: ./compareHist_Demo <image_settings0> <image_setting1> <image_settings2>\n");
+//        return -1;
+//      }
+
+    // src_base = imread( argv[1], 1 );
+    // src_test1 = imread( argv[2], 1 );
+    // src_test2 = imread( argv[3], 1 );
+    src_base = imread(this->get_cpath(src1file), 1);
+    src_test1 = imread(this->get_cpath(src2file), 1);
+    src_test2 = imread(this->get_cpath(src3file), 1);
+
+    int minHession = 20000; // 400  - 30000
+
+    cv::SurfFeatureDetector surfdt1(minHession);
+    std::vector<cv::KeyPoint> kps1, kps2, kps3;
+    cv::KeyPoint kpt;
+
+    surfdt1.detect(src_base, kps1);
+    surfdt1.detect(src_test1, kps2);
+    surfdt1.detect(src_test2, kps3);
+
+    qLogx()<< "Done"<<kps1.size()<<kps2.size()<<kps3.size();
+    for (int i = 0; i < kps1.size(); i++) {
+        kpt = kps1.at(i);
+        // qLogx()<<i<<kpt.size<<kpt.hash();
+    }
+
+    QString resall = "" ;// resstrs.join("\n");
+
+
+    this->mreses << resall;
 
     return true;
 }
