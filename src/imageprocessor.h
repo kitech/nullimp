@@ -62,6 +62,7 @@ private:
 
     //
     bool surf_detect_it(QString src1file, QString src2file, QString src3file);
+    bool cvextor_it(QString src1file, QString src2file, QString algo, QString hisen);
 
 private:
     QStringList margs;

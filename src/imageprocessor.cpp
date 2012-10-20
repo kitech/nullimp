@@ -131,6 +131,12 @@ void ImageProcessor::run()
         src2 = args.at(2);
         src3 = args.at(3);
         this->surf_detect_it(src1, src2, src3);
+    }  else if (op == "cvextor") {
+        src1 = args.at(1);
+        src2 = args.at(2);
+        QString algo = args.at(3);
+        QString hisen = args.at(4);
+        this->cvextor_it(src1, src2, algo, hisen);
     } else {
         qLogx() << "unknown op: " + op;
     }
@@ -1872,4 +1878,67 @@ bool ImageProcessor::surf_detect_it(QString src1file, QString src2file, QString 
     this->mreses << resall;
 
     return true;
+}
+
+bool ImageProcessor::cvextor_it(QString src1file, QString src2file, QString algo, QString hisen)
+{
+    Mat src_base, hsv_base;
+    Mat src_test1, hsv_test1;
+    Mat src_test2, hsv_test2;
+    Mat hsv_half_down;
+
+    /// Load three images with different environment settings
+//    if( argc < 4 )
+//      { printf("** Error. Usage: ./compareHist_Demo <image_settings0> <image_setting1> <image_settings2>\n");
+//        return -1;
+//      }
+
+    // src_base = imread( argv[1], 1 );
+    // src_test1 = imread( argv[2], 1 );
+    // src_test2 = imread( argv[3], 1 );
+    src_base = imread(this->get_cpath(src1file), 1);
+    src_test1 = imread(this->get_cpath(src2file), 1);
+
+    int minHession = hisen.toInt(); // 400  - 30000
+
+    cv::SiftFeatureDetector siftdt1(minHession);
+    cv::SurfFeatureDetector surfdt1(minHession);
+    cv::FastFeatureDetector fastdt1(minHession);
+    cv::GoodFeaturesToTrackDetector gooddt1(minHession);
+    cv::MserFeatureDetector mserdt1(minHession);
+    cv::StarFeatureDetector stardt1(minHession);
+    cv::DenseFeatureDetector densedt1(minHession);
+    cv::OrbFeatureDetector orbdt1(minHession);
+
+    HOGDescriptor hog;
+
+
+    cv::BriefDescriptorExtractor brief_extor;
+    cv::SurfDescriptorExtractor surf_extor;
+    cv::SiftDescriptorExtractor sift_extor;
+    //  cv::OpponentColorDescriptorExtractor oppo_extor;
+    // cv::BOWImgDescriptorExtractor bow_extor;
+    cv::OrbDescriptorExtractor orb_extor;
+    cv::FREAK  freak_extor(minHession);
+
+
+
+    std::vector<cv::KeyPoint> kps1, kps2, kps3;
+    cv::KeyPoint kpt;
+    cv::Mat desc_1, desc_2, desc_3;
+
+    surfdt1.detect(src_base, kps1);
+    surfdt1.detect(src_test1, kps2);
+
+    qLogx()<< "Done"<<kps1.size()<<kps2.size()<<kps3.size();
+    for (int i = 0; i < kps1.size(); i++) {
+        kpt = kps1.at(i);
+        // qLogx()<<i<<kpt.size<<kpt.hash();
+    }
+
+    QString resall = "" ;// resstrs.join("\n");
+
+
+    this->mreses << resall;
+    return false;
 }

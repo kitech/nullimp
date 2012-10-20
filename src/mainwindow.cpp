@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->installConnection();
 
     /////////test
-    // this->test1();
+    this->test1();
 }
 
 MainWindow::~MainWindow()
@@ -128,6 +128,7 @@ void MainWindow::test1()
     cv::FernDescriptorMatcher fern_matcher;
 
     cv::SurfDescriptorExtractor extractor;
+    cv::SiftDescriptorExtractor  sift_extor;
 
 }
 
@@ -200,6 +201,11 @@ void MainWindow::installConnection()
     QObject::connect(this->ui->pushButton_31, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
     QObject::connect(this->ui->pushButton_32, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    // cvextor
+    QObject::connect(this->ui->pushButton_34, SIGNAL(clicked()),
+                     this, SLOT(onSelectSrc()));
+    QObject::connect(this->ui->pushButton_36, SIGNAL(clicked()),
                      this, SLOT(onSelectSrc()));
 
 
@@ -286,7 +292,9 @@ void MainWindow::installConnection()
                      this, SLOT(onProcessImage()));
     QObject::connect(this->ui->pushButton_127, SIGNAL(clicked()),
                      this, SLOT(onProcessImage()));
-
+    // cvextor
+    QObject::connect(this->ui->pushButton_129, SIGNAL(clicked()),
+                     this, SLOT(onProcessImage()));
 }
 
 
@@ -552,6 +560,20 @@ void MainWindow::onSelectSrc()
     }
 
     // surfex
+    if (btn == this->ui->pushButton_34) {
+        this->ui->lineEdit_21->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_171->setPixmap(tpic);
+    }
+    if (btn == this->ui->pushButton_36) {
+        this->ui->lineEdit_23->setText(srcfile);
+
+        QPixmap pic(srcfile);
+        QPixmap tpic  = pic.scaledToWidth(300);
+        this->ui->label_48->setPixmap(tpic);
+    }
 }
 
 void MainWindow::onProcessImage()
@@ -963,6 +985,23 @@ void MainWindow::onProcessImage()
                          this, SLOT(onImageProcessorDone()));
         proc->run(args);
     }
+
+    // cvextor
+    if (btn == this->ui->pushButton_128) {
+        QString src1file = this->ui->lineEdit_21->text();
+        QString src2file = this->ui->lineEdit_23->text();
+        QString algo = this->ui->comboBox->currentText();
+        int hise = this->ui->horizontalSlider_9->value();
+
+        ImageProcessor  * proc = new ImageProcessor();
+        QStringList args;
+        args << "cvextor" << src1file << src2file  << algo << QString::number(hise) ;
+            // << QString::number(this->ui->horizontalSlider_25->value());
+
+        QObject::connect(proc, SIGNAL(finished()),
+                         this, SLOT(onImageProcessorDone()));
+        proc->run(args);
+    }
 }
 
 void MainWindow:: onImageProcessorDone()
@@ -1125,6 +1164,10 @@ void MainWindow:: onImageProcessorDone()
     if (op == "surfdt") {
         QString rs = reses.at(4);
         this->ui->textEdit_2->setText(rs);
+    }
+
+    if (op == "cvextor") {
+        qLogx()<<"done.";
     }
 
     delete proc;
