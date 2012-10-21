@@ -1948,16 +1948,37 @@ bool ImageProcessor::cvextor_it(QString src1file, QString src2file, QString algo
     cv::BFMatcher bf_mater(cv::NORM_L2);
     std::vector<cv::DMatch> mates;
 
-    // mater.match(desc_1, desc_2, mates);
-    bf_mater.match(desc_1, desc_2, mates);
+    mater.match(desc_1, desc_2, mates);
+    // bf_mater.match(desc_1, desc_2, mates);
 
     qLogx()<<"mates:" << mates.size();
 
     cv::Mat img_matches;
     cv::drawMatches(src_base, kps1, src_test1, kps2, mates, img_matches);
 
+    //// good match filter
+    double max_dist = 0; double min_dist = 100;
+    for (int i = 0; i < desc_1.rows; i++) {
+        double dist = mates[i].distance;
+        if (dist < min_dist)  min_dist = dist;
+        if (dist > max_dist) max_dist = dist;
+    }
+    qLogx()<<"min dist:" << min_dist << ", max dist: " << max_dist;
+
+    std::vector<cv::DMatch> good_matches;
+    for (int i = 0; i < desc_1.rows; i++) {
+        if (mates[i].distance < 2 * min_dist) {
+            good_matches.push_back(mates[i]);
+        }
+    }
+    qLogx()<<"good matches:" << good_matches.size();
+
+    cv::Mat good_img_matches;
+    cv::drawMatches(src_base, kps1, src_test1, kps2, good_matches, good_img_matches);
+
     QString resfile = this->get_tpath(src1file, " ",  "mated");
     cv::imwrite(this->get_cpath(resfile), img_matches);
+    cv::imwrite(this->get_cpath(resfile), good_img_matches);
 
     QString resall = "" ;// resstrs.join("\n");
 
