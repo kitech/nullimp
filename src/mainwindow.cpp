@@ -987,7 +987,7 @@ void MainWindow::onProcessImage()
     }
 
     // cvextor
-    if (btn == this->ui->pushButton_128) {
+    if (btn == this->ui->pushButton_129) {
         QString src1file = this->ui->lineEdit_21->text();
         QString src2file = this->ui->lineEdit_23->text();
         QString algo = this->ui->comboBox->currentText();
@@ -1167,6 +1167,8 @@ void MainWindow:: onImageProcessorDone()
     }
 
     if (op == "cvextor") {
+        QPixmap r1 = QPixmap(reses.at(5)).scaledToWidth(500);
+        this->ui->label_47->setPixmap(r1);
         qLogx()<<"done.";
     }
 

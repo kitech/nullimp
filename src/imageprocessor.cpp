@@ -1900,6 +1900,7 @@ bool ImageProcessor::cvextor_it(QString src1file, QString src2file, QString algo
     src_test1 = imread(this->get_cpath(src2file), 1);
 
     int minHession = hisen.toInt(); // 400  - 30000
+    // minHession = 600;
 
     cv::SiftFeatureDetector siftdt1(minHession);
     cv::SurfFeatureDetector surfdt1(minHession);
@@ -1936,9 +1937,28 @@ bool ImageProcessor::cvextor_it(QString src1file, QString src2file, QString algo
         // qLogx()<<i<<kpt.size<<kpt.hash();
     }
 
+    // kps1.clear();
+    // kps2.clear();
+    surf_extor.compute(src_base, kps1, desc_1);
+    surf_extor.compute(src_test1, kps2, desc_2);
+
+    qLogx()<<"extor size:" << kps1.size() << kps2.size() << desc_1.elemSize() << desc_2.elemSize();
+
+    cv::FlannBasedMatcher mater;
+    std::vector<cv::DMatch> mates;
+
+    mater.match(desc_1, desc_2, mates);
+
+    qLogx()<<"mates:" << mates.size();
+
+    cv::Mat img_matches;
+    cv::drawMatches(src_base, kps1, src_test1, kps2, mates, img_matches);
+
+    QString resfile = this->get_tpath(src1file, " ",  "mated");
+    cv::imwrite(this->get_cpath(resfile), img_matches);
+
     QString resall = "" ;// resstrs.join("\n");
 
-
-    this->mreses << resall;
+    this->mreses <<resfile << resall;
     return false;
 }
