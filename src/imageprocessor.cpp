@@ -1945,9 +1945,11 @@ bool ImageProcessor::cvextor_it(QString src1file, QString src2file, QString algo
     qLogx()<<"extor size:" << kps1.size() << kps2.size() << desc_1.elemSize() << desc_2.elemSize();
 
     cv::FlannBasedMatcher mater;
+    cv::BFMatcher bf_mater(cv::NORM_L2);
     std::vector<cv::DMatch> mates;
 
-    mater.match(desc_1, desc_2, mates);
+    // mater.match(desc_1, desc_2, mates);
+    bf_mater.match(desc_1, desc_2, mates);
 
     qLogx()<<"mates:" << mates.size();
 
