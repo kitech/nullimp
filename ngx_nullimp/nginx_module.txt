@@ -1,0 +1,8 @@
+nginx模块编写精要：
+config：
+    这是一个shell脚本，用来设定模块相关变量，包括模块名，模块源文件
+    变量列表：
+    
+build:
+    ./configure --add-module=nullimp/nm_nullimg
+

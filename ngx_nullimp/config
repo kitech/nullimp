@@ -1,0 +1,3 @@
+###########
+NGX_MODULE_NAME=nullimp
+HTTP_SRCS="abc.cpp"
