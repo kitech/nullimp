@@ -13,7 +13,7 @@ if [ $ngx_found = yes ]; then
     ngx_addon_name=ngx_http_circle_gif_module
     HTTP_MODULES="$HTTP_MODULES ngx_http_circle_gif_module"
     NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_circle_gif_module.cpp"
-    CORE_LIBS="$CORE_LIBS -lMagickWand"
+    CORE_LIBS="$CORE_LIBS -lMagickWand -lstdc++"
     CFLAGS="$CFLAGS `MagickWand-config --cflags`"
 else
     cat << END
