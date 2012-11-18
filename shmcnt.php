@@ -27,7 +27,7 @@ $nval = shm_get_var($list_tail_rh, $list_tail_key);
 var_dump($nval);
 */
 
-$sq = new ShmQueue();
+$sq = new ShmQueue('abc');
 $sq->dump();
 $sq->reset();
 $sq->dump();
@@ -51,7 +51,18 @@ echo "bt={$btime}, et={$etime}, dt={$dtime}, rate={$rate}, size={$qs}\n";
 // bt=1353261731.0004, et=1353261731.0203, dt=0.019963979721069, rate=500902.13172509
 $sq->dump();
 
-
+$ttimes = 10000;
+$btime = microtime(true);
+for ($i = 0; $i < $ttimes; $i++) {
+    $name = "q{$i}";
+    $sq = new ShmQueue($name);
+    $sq->destroy();
+}
+$etime = microtime(true);
+$dtime = $etime - $btime;
+$rate = $ttimes / $dtime;
+// $qs = $sq->size();
+echo "bt={$btime}, et={$etime}, dt={$dtime}, rate={$rate}, size={$qs}\n";
 
 
 class ShmQueue
@@ -67,12 +78,16 @@ class ShmQueue
     private $list_head_lh = null;
     private $list_tail_lh = null;
 
-    public function __construct()
+    private $_name = '';
+
+    public function __construct($name)
     {
-        $this->list_head_key = crc32('shm_list_head');
-        $this->list_tail_key = crc32('shm_list_tail');
-        $this->list_head_lock_key = crc32('sem_list_head');
-        $this->list_tail_lock_key = crc32('sem_list_tail');
+        $this->_name = $name;
+
+        $this->list_head_key = crc32('shm_list_head_' . $name);
+        $this->list_tail_key = crc32('shm_list_tail_' . $name);
+        $this->list_head_lock_key = crc32('sem_list_head_' . $name);
+        $this->list_tail_lock_key = crc32('sem_list_tail_' . $name);
         
         $this->list_head_rh = shm_attach($this->list_head_key);
         $this->list_tail_rh = shm_attach($this->list_tail_key);
