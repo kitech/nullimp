@@ -9,13 +9,17 @@ for ($i = 0; $i < $times; $i++) {
     $fp = fopen($load_file, 'r');
     $loads = fgets($fp);
     fclose($fp);
-    // $pos1 = strchr($loads, ' ');
-    $ploads = explode(' ', $loads);
+    $pos1 = strpos($loads, ' ');
+    $min1_load = substr($loads, 0, $pos1);
+    // echo $pos1 . "a{$min1_load}a\n";exit;
+    // $ploads = explode(' ', $loads);
     // $min1_load = $ploads[0];
     // $min5_load = $ploads[1];
     // $min15_load = $ploads[2];
     
     // $min1_load = strpbrk($loads, ' ');
+    // echo $min1_load . "\n";
+    // exit;
 }
 
 $etime = microtime(true);
