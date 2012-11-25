@@ -9,12 +9,26 @@ ngx_feature_libs=-lMagickWand
 ngx_feature_test="MagickWandGenesis()"
 . auto/feature
 
+ngx_feature="OpenCV"
+ngx_feature_name=
+ngx_feature_run=no
+ngx_feature_incs=""
+ngx_feature_path=""
+ngx_feature_libs=""
+ngx_feature_test=""
+. auto/feature
+
+
 if [ $ngx_found = yes ]; then
-    ngx_addon_name=ngx_http_circle_gif_module
-    HTTP_MODULES="$HTTP_MODULES ngx_http_circle_gif_module"
-    NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_circle_gif_module.cpp"
-    CORE_LIBS="$CORE_LIBS -lMagickWand -lstdc++"
-    CFLAGS="$CFLAGS `MagickWand-config --cflags`"
+    #ngx_addon_name=ngx_http_circle_gif_module
+    ngx_addon_name=ngx_http_nullimp_module
+    HTTP_MODULES="$HTTP_MODULES ngx_http_nullimp_module"
+    #HTTP_MODULES="$HTTP_MODULES ngx_http_circle_gif_module"
+    #NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_circle_gif_module.cpp"
+    NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_nullimp.cpp"
+    #CORE_LIBS="$CORE_LIBS -lMagickWand -lstdc++ -lopencv_core -lopencv_contrib -lopencv_features2d -lopencv_imgproc -lopencv_ml -lopencv_nonfree -lopencv_objdetect  "
+    CORE_LIBS="$CORE_LIBS -lMagickWand -lstdc++ `pkg-config --libs opencv`  "
+    CFLAGS="$CFLAGS -g -std=c++11 `MagickWand-config --cflags` `pkg-config --cflags opencv` "
 else
     cat << END
 $0: error: the Circle GIF addon requires the ImageMagick library.

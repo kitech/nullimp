@@ -6,9 +6,10 @@ extern "C" {
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
+};
+
 #include <wand/magick-wand.h>
 #define radius2index(r, cglcf) (r-(cglcf)->min_radius)/(cglcf)->step_radius
-};
 
 #include <iostream>
 #include <cstdio>

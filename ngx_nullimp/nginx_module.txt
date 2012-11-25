@@ -4,5 +4,13 @@ config：
     变量列表：
     
 build:
-    ./configure --add-module=nullimp/nm_nullimg
+    ./configure  --prefix=/serv/stow/nginx --with-debug  --add-module=nullimp/ngx_nullimg
+
+在nginx.conf中最上面添加：
+location /nimp {
+    nullimp;
+}
+
+是否有办法在修改模块配置后不重新编译所有的代码？
+    
 
