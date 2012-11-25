@@ -18,12 +18,7 @@ extern "C" {
 static char* ngx_http_nullimp(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 typedef struct {
-    ngx_uint_t   max_radius;
-    ngx_uint_t   min_radius;
-    ngx_uint_t   step_radius;
-    unsigned char** circle_templates;
-    size_t* circle_sizes;
-    ngx_flag_t           enable;
+
 } ngx_http_nullimp_loc_conf_t;
 
 static ngx_command_t  ngx_http_nullimp_commands[] = {
@@ -75,6 +70,47 @@ ngx_module_t  ngx_http_nullimp_module = {
 static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
 {
     ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+    ngx_int_t rc;
+    ngx_buf_t *b;
+    ngx_chain_t out;
+
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+    rc = ngx_http_discard_request_body(r);
+    if (rc != NGX_OK && rc != NGX_AGAIN) {
+        return rc;
+    }
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+    
+    r->headers_out.content_type.len = sizeof("text/html")-1;
+    r->headers_out.content_type.data = (u_char*)("text/html");
+
+    r->headers_out.status = NGX_HTTP_OK;
+    r->headers_out.content_length_n = 5;
+
+    b = (ngx_buf_t*)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+    out.buf = b;
+    out.next = NULL;
+
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+
+    // 
+    char *resp = "12345";
+    b->pos = (u_char*)resp;
+    b->last = (u_char*)(resp + 5);
+
+    b->memory = 1;
+    b->last_buf = 1;
+
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+    rc = ngx_http_send_header(r);
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+
+    rc = ngx_http_output_filter(r, &out);
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+
+    // return rc;
+    // return NGX_DONE;
+    // return NGX_AGAIN;
     return NGX_OK;
 }
 
