@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+
 #include <wand/magick_wand.h>
 
 #include "cimp.h"
@@ -24,6 +25,7 @@ public:
     GmImp();
     virtual ~GmImp();
 
+    virtual unsigned char *get_result(size_t *length);
 
 protected:
     virtual bool do_imp() override;

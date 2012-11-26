@@ -16,8 +16,8 @@ public:
     virtual ~Cimp();
 
     bool process(char *path);
-    char *get_result();
 
+    virtual unsigned char *get_result(size_t *length);
     virtual char *get_error();
     virtual int get_errno();
 

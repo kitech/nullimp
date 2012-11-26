@@ -6,7 +6,7 @@ extern "C" {
 #include <ngx_log.h>
 };
 
-#include <wand/magick-wand.h>
+#include <wand/magick_wand.h>
 #define radius2index(r, cglcf) (r-(cglcf)->min_radius)/(cglcf)->step_radius
 
 #include <iostream>
