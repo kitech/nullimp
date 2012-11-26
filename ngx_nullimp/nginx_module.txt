@@ -21,8 +21,14 @@ location /nimp {
 需要做成php fastcgi模式，还需要另外的进行提供服务，这种方式也是不太行。
 不过，可以学习着写一写upstream方式的nginx模板。
 
+
 如果直接在worker进程进行阻塞式的处理的话，可以加大worker进程数的方式，
 进程数设置到100-1000，也许也可以
+加大进程数也不行
+
+使用nginx的non-blocking delay between request and response机制。        
+http://forum.nginx.org/read.php?29,89914,90013#msg-90013
+
 
 学习nginx的资料：
 http://code.google.com/p/nginxsrp/wiki/NginxCodeReview
