@@ -18,12 +18,20 @@ public:
     bool process(char *path);
     char *get_result();
 
+    virtual char *get_error();
+    virtual int get_errno();
+
+    void dump_params();
+
 protected:
     bool parse_path();
-    bool do_imp();
+    virtual bool do_imp();
     
 protected:
     char ori_path[256];
+    char file_path[256];
+    int pid;
+    int mid;
     int scale;
     int thumb_width;
     int thumb_height;
