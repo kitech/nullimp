@@ -1,5 +1,6 @@
 ////////
 
+#include <iostream>
 
 #include "gmimp.h"
 
@@ -37,17 +38,40 @@ bool GmImp::do_imp()
     int iret;
     MagickPassFail status = MagickPass;
 
+    strcpy(this->file_path, "/mnt/sda7/serv/stow/nginx-1.1.3/html/libjpegtest5.jpeg");
+
     status = MagickReadImage(this->wand, this->file_path);
+
     if (status == MagickPass) {
-        
+
     } else {
+        this->get_errno();
         assert(1 == 2);
     }
 
-    iret = MagickResizeImage(this->wand, 100, 100, UndefinedFilter, 1.2);
+    iret = MagickResizeImage(this->wand, 80, 80, UndefinedFilter, 1.2);
 
     return false;
 }
 
 
+char *GmImp::get_error()
+{
+    char *err;
+    ExceptionType et;
+
+    err = MagickGetException(this->wand, &et);
+    std::cout<<"err:"<<err<<",eno:"<<et<<std::endl;
+    return err;
+}
+
+int GmImp::get_errno()
+{
+    char *err;
+    ExceptionType et;
+
+    err = MagickGetException(this->wand, &et);
+    std::cout<<"err:"<<err<<",eno:"<<et<<std::endl;
+    return et;    
+}
 

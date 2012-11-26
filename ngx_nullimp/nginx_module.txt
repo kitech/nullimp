@@ -10,6 +10,9 @@ build:
 location /nimp {
     nullimp;
 }
+调试时，可在配置文件加上daemon off;，方便输出调试。
+
+在nginx模块中，也只能读取nginx配置的DocumentRoot目录下的文件。
 
 是否有办法在修改模块配置后不重新编译所有的代码？
 

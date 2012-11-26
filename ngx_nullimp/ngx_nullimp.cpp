@@ -6,13 +6,15 @@ extern "C" {
 #include <ngx_log.h>
 };
 
-#include <wand/magick_wand.h>
-#define radius2index(r, cglcf) (r-(cglcf)->min_radius)/(cglcf)->step_radius
-
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
+
+#include <wand/magick_wand.h>
+#define radius2index(r, cglcf) (r-(cglcf)->min_radius)/(cglcf)->step_radius
+#include "gmimp.h"
 
 /////// 前置定义函数
 static char* ngx_http_nullimp(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
@@ -80,12 +82,30 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
         return rc;
     }
     ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+
+    ////////////
+    GmImp *imp = new GmImp();
+    imp->process("ab/cb/g/efkjdsoifds_p12_mk456.jpg");
+
+    size_t img_length;
+    u_char *img_data = imp->get_result(&img_length);
+
+    std::cout<<"got img length:"<<img_length<<std::endl;
+
+    // delete imp;
+    ////////////
+
     
-    r->headers_out.content_type.len = sizeof("text/html")-1;
-    r->headers_out.content_type.data = (u_char*)("text/html");
+    // r->headers_out.content_type.len = sizeof("text/html")-1;
+    // r->headers_out.content_type.data = (u_char*)("text/html");
+
+    char *ct = "image/jpeg";
+    r->headers_out.content_type.len = strlen(ct);
+    r->headers_out.content_type.data = (u_char*)(ct);
+
 
     r->headers_out.status = NGX_HTTP_OK;
-    r->headers_out.content_length_n = 5;
+    r->headers_out.content_length_n = img_length ; // 5;
 
     b = (ngx_buf_t*)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
     out.buf = b;
@@ -95,8 +115,11 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
 
     // 
     char *resp = "12345";
-    b->pos = (u_char*)resp;
-    b->last = (u_char*)(resp + 5);
+    // b->pos = (u_char*)resp;
+    // b->last = (u_char*)(resp + 5);
+
+    b->pos = (u_char*)img_data;
+    b->last = (u_char*)(img_data + img_length);
 
     b->memory = 1;
     b->last_buf = 1;
@@ -107,6 +130,8 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
 
     rc = ngx_http_output_filter(r, &out);
     ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+
+    delete imp;
 
     // return rc;
     // return NGX_DONE;

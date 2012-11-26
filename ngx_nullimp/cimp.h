@@ -9,6 +9,8 @@
 #ifndef _CIMP_H_
 #define _CIMP_H_
 
+#include <stdlib.h>
+
 class Cimp
 {
 public:

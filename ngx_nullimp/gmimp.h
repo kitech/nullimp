@@ -26,6 +26,8 @@ public:
     virtual ~GmImp();
 
     virtual unsigned char *get_result(size_t *length);
+    virtual char *get_error();
+    virtual int get_errno();
 
 protected:
     virtual bool do_imp() override;

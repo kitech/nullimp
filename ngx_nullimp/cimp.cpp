@@ -33,6 +33,13 @@ bool Cimp::process(char *path)
 
     return true;
 }
+
+unsigned char *Cimp::get_result(size_t *length)
+{
+    *length = 0;
+    return NULL;
+}
+
 /*
   7a/59/6/3f4c1ee14901c2a1c18931538ed_p2_mk4.jpg
  */
