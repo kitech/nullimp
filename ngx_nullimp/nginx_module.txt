@@ -29,6 +29,8 @@ location /nimp {
 使用nginx的non-blocking delay between request and response机制。        
 http://forum.nginx.org/read.php?29,89914,90013#msg-90013
 
+nginx的clang编译：
+    CC=clang CXX=clang++ ./configure ---------
 
 学习nginx的资料：
 http://code.google.com/p/nginxsrp/wiki/NginxCodeReview
