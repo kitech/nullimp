@@ -67,6 +67,8 @@ ngx_module_t  ngx_http_nullimp_module = {
     NGX_MODULE_V1_PADDING
 };
 
+static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 static void *imp_thread_proc(void *arg)
 {
     ngx_int_t rc;
@@ -90,8 +92,8 @@ static void *imp_thread_proc(void *arg)
     r->headers_out.status = NGX_HTTP_OK;
     r->headers_out.content_length_n = img_length ; // 5;
 
-    // b = (ngx_buf_t*)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
-    b = &pb;
+    b = (ngx_buf_t*)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+    // b = &pb;
     out.buf = b;
     out.next = NULL;
 
@@ -108,18 +110,20 @@ static void *imp_thread_proc(void *arg)
     b->memory = 1;
     b->last_buf = 1;
 
-    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler1");    
     rc = ngx_http_send_header(r);
-    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler2");    
 
     rc = ngx_http_output_filter(r, &out);
-    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler:%d", rc);    
 
     delete imp;
 
     // sleep(3);
     std::cout<<"imp thread done111"<<std::endl;
+    pthread_mutex_lock(&g_mutex);
     ngx_http_finalize_request(r, NGX_DONE);
+    pthread_mutex_unlock(&g_mutex);
     std::cout<<"imp thread done222 "<<std::endl;
 }
 

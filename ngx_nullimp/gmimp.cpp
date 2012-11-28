@@ -38,8 +38,8 @@ bool GmImp::do_imp()
     int iret;
     MagickPassFail status = MagickPass;
 
-    // strcpy(this->file_path, "/mnt/sda7/serv/stow/nginx-1.1.3/html/libjpegtest5.jpeg");
-    strcpy(this->file_path, "/serv/stow/nginx-1.3/html/libjpegtest5.jpeg");
+    strcpy(this->file_path, "/mnt/sda7/serv/stow/nginx-1.1.3/html/libjpegtest5.jpeg");
+    // strcpy(this->file_path, "/serv/stow/nginx-1.3/html/libjpegtest5.jpeg");
 
     status = MagickReadImage(this->wand, this->file_path);
 
