@@ -22,7 +22,7 @@ void benchmark_opencv_resize()
 
     cv::resize(src, thumb, cv::Size(300, 400));
 
-    cv::imwrite("/tmp/abc.jpg", thumb);
+    // cv::imwrite("/tmp/abc.jpg", thumb);
 
 }
 
@@ -39,11 +39,11 @@ void benchmark_gmagick_resize()
     MagickResizeImage(wand, 300, 400, UndefinedFilter, 0);
 
     char *out_file = "/tmp/efg.jpg";
-    MagickWriteImage(wand, out_file);
+    // MagickWriteImage(wand, out_file);
 
-    DestroyMagickWand(wand);
+    // DestroyMagickWand(wand);
 
-    DestroyMagick();
+    // DestroyMagick();
     /*
       unsigned int MagickResizeImage( MagickWand *wand, const unsigned long columns,
       const unsigned long rows, const FilterTypes filter,
@@ -67,6 +67,6 @@ void benchmark_vips_resize()
     vips::VImage jim = fred.resize_linear(300, 400);
     
     // write to file argv[2]
-    jim.write ("/tmp/hi.jpg");
+    // jim.write ("/tmp/hi.jpg");
 }
 

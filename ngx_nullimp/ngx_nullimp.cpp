@@ -115,7 +115,7 @@ static void *imp_thread_proc(void *arg)
     ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler2");    
 
     rc = ngx_http_output_filter(r, &out);
-    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler:%d", rc);    
+    ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler:%%d");    
 
     delete imp;
 
