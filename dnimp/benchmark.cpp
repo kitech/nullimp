@@ -32,7 +32,7 @@ void benchmark_gmagick_resize()
     MagickWand *wand;
     MagickPassFail status = MagickPass;
 
-    InitializeMagick(0);
+    // InitializeMagick(0);
     wand = NewMagickWand();
     status = MagickReadImage(wand, "/home/gzleo/shots/nshots93.jpg");
 
@@ -54,17 +54,18 @@ void benchmark_gmagick_resize()
 // 160ms
 void benchmark_vips_resize()
 {
-    vips::VImage fred ("/home/gzleo/shots/nshots93.jpg");
+    // vips::VImage fred ("/home/gzleo/shots/nshots93.jpg");
 
     // make a 3x3 sharpen mask
+    /*
     VIMask sharp (3, 3, 8, 0,
                   -1, -1, -1,
                   -1, 16, -1,
                   -1, -1, -1);
-              
+    */        
     // brighten and sharpen
     // VImage jim = (fred * 1.2).conv (sharp);
-    vips::VImage jim = fred.resize_linear(300, 400);
+    // vips::VImage jim = fred.resize_linear(300, 400);
     
     // write to file argv[2]
     // jim.write ("/tmp/hi.jpg");

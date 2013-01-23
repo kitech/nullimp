@@ -18,8 +18,13 @@ pkg_check_modules(GMKW REQUIRED GraphicsMagickWand)
 pkg_check_modules(VIPS REQUIRED vipsCC)
 
 include_directories(${GMKW_INCLUDE_DIRS} ${VIPS_INCLUDE_DIRS})
-target_link_libraries(dnimp ${OPENCV_LIBRARIES} ${ZMQ_LIBRARIES}
-  ${GMKW_LIBRARIES}  
-  ${VIPS_LIBRARIES}
-  -lvipsCC
+target_link_libraries(dnimp 
+  # ${OPENCV_LIBRARIES}
+  opencv_core opencv_imgproc opencv_highgui
+  GraphicsMagickWand
+  
+  ${ZMQ_LIBRARIES}
+#  ${GMKW_LIBRARIES}  
+#  ${VIPS_LIBRARIES}
+#  -lvipsCC
   )
