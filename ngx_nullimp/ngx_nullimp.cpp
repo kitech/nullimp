@@ -6,6 +6,10 @@ extern "C" {
 #include <ngx_log.h>
 };
 
+extern "C" {
+#include "thpool.h"
+};
+
 #include <pthread.h>
 
 #include <iostream>
@@ -67,6 +71,7 @@ ngx_module_t  ngx_http_nullimp_module = {
     NGX_MODULE_V1_PADDING
 };
 
+static thpool_t * gthp = NULL;
 static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void *imp_thread_proc(void *arg)
@@ -157,9 +162,10 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     */
     r->main->count += 1; // 这句代码这么管用啊！！！
 
-    pthread_t pth;
-    int pcr;
-    pcr = pthread_create(&pth, NULL, imp_thread_proc, (void*)r);
+    // pthread_t pth;
+    // int pcr;
+    // pcr = pthread_create(&pth, NULL, imp_thread_proc, (void*)r);
+    thpool_add_work(gthp, imp_thread_proc, (void*)r);
 
     return NGX_OK;
     // delete imp;
@@ -221,6 +227,14 @@ static char* ngx_http_nullimp(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
     // cglcf->enable = 1;
 
+    if (gthp == NULL) {
+        gthp = thpool_init(3);
+    }
+    ngx_log_debug0(NGX_LOG_INFO, cf->log, 0, "enter nullimp module222");
+
+    if (!gthp) {
+        return (char*)NGX_CONF_ERROR;
+    }
     return NGX_CONF_OK;
     return NULL;
 }
