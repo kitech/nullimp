@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "-g -O2 -pipe -std=c++11")
 
 add_definitions(-DABC=1)
 
-add_executable(dnimp dnimp/main.cpp dnimp/benchmark.cpp
+add_executable(dnimp dnimp/main.cpp dnimp/benchmark.cpp dnimp/baseimp.cpp
   )
 
 include(FindPkgConfig)
@@ -15,7 +15,7 @@ pkg_check_modules(OPENCV REQUIRED opencv)
 pkg_check_modules(ZMQ REQUIRED libzmq )
 pkg_check_modules(GMK REQUIRED GraphicsMagick)
 pkg_check_modules(GMKW REQUIRED GraphicsMagickWand)
-pkg_check_modules(VIPS REQUIRED vipsCC)
+#pkg_check_modules(VIPS REQUIRED vipsCC)
 
 include_directories(${GMKW_INCLUDE_DIRS} ${VIPS_INCLUDE_DIRS})
 target_link_libraries(dnimp 
