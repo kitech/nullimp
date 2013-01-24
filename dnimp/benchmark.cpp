@@ -1,29 +1,35 @@
 
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <unistd.h>
+#include <string>
+#include <iostream>
 
-#include "opencv/cv.h"
-#include "opencv2/nonfree/nonfree.hpp"
+#include "impfactory.h"
+#include "baseimp.h"
 
 #include "wand/wand_api.h"
 #include "wand/magick_wand.h"
 
-#include "vips/vipscpp.h"
-// #include "vips/vips.h"
+// #include "vips/vipscpp.h"
+//// #include "vips/vips.h"
 
 #include "benchmark.h"
 
 // 100ms
 void benchmark_opencv_resize()
 {
-    cv::Mat src, thumb;
+    // cv::Mat src, thumb;
 
-    src = cv::imread("/home/gzleo/shots/nshots93.jpg");
+    // src = cv::imread("/home/gzleo/shots/nshots93.jpg");
 
-    cv::resize(src, thumb, cv::Size(300, 400));
+    // cv::resize(src, thumb, cv::Size(300, 400));
 
     // cv::imwrite("/tmp/abc.jpg", thumb);
 
+    BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_OPENCV);
+    std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 500, 400);
+    std::cout<<"file name:" << tname<<(&tname) << std::endl;
+    
+    unlink(tname.c_str());
 }
 
 // 120ms
