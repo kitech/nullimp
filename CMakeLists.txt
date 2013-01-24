@@ -9,6 +9,7 @@ add_definitions(-DABC=1)
 
 add_executable(dnimp dnimp/main.cpp dnimp/benchmark.cpp dnimp/baseimp.cpp
   dnimp/ocvimp.cpp dnimp/impfactory.cpp
+  dnimp/gmagickimp.cpp
   )
 
 include(FindPkgConfig)
@@ -22,7 +23,7 @@ include_directories(${GMKW_INCLUDE_DIRS} ${VIPS_INCLUDE_DIRS})
 target_link_libraries(dnimp 
   # ${OPENCV_LIBRARIES}
   opencv_core opencv_imgproc opencv_highgui
-  GraphicsMagickWand
+  GraphicsMagickWand GraphicsMagick
   
   ${ZMQ_LIBRARIES}
 #  ${GMKW_LIBRARIES}  

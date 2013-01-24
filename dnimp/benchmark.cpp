@@ -6,8 +6,8 @@
 #include "impfactory.h"
 #include "baseimp.h"
 
-#include "wand/wand_api.h"
-#include "wand/magick_wand.h"
+// #include "wand/wand_api.h"
+// #include "wand/magick_wand.h"
 
 // #include "vips/vipscpp.h"
 //// #include "vips/vips.h"
@@ -29,27 +29,34 @@ void benchmark_opencv_resize()
     std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 500, 400);
     std::cout<<"file name:" << tname<<(&tname) << std::endl;
     
-    unlink(tname.c_str());
+    // unlink(tname.c_str());
 }
 
 // 120ms
 void benchmark_gmagick_resize()
 {
+    BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_GMAGICK);
+    std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 500, 400);
+    std::cout<<"file name:" << tname<<(&tname) << std::endl;
+    
+    unlink(tname.c_str());
+    
+    /*
     MagickWand *wand;
     MagickPassFail status = MagickPass;
 
-    // InitializeMagick(0);
+    InitializeMagick(0);
     wand = NewMagickWand();
     status = MagickReadImage(wand, "/home/gzleo/shots/nshots93.jpg");
 
     MagickResizeImage(wand, 300, 400, UndefinedFilter, 0);
 
     char *out_file = "/tmp/efg.jpg";
-    // MagickWriteImage(wand, out_file);
+    MagickWriteImage(wand, out_file);
 
-    // DestroyMagickWand(wand);
-
-    // DestroyMagick();
+    DestroyMagickWand(wand);
+    DestroyMagick();
+    */
     /*
       unsigned int MagickResizeImage( MagickWand *wand, const unsigned long columns,
       const unsigned long rows, const FilterTypes filter,

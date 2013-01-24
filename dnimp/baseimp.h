@@ -11,11 +11,12 @@ public:
 
     virtual std::string resizeFile(const char *file, int width, int height) = 0;
     virtual std::string resizeFile(const char *file, int percent) = 0;
-    virtual std::string resizeBuffer(const char *buffer, int width, int height) = 0;
-    virtual std::string resizeBuffer(const char *buffer, int percent) = 0;
+    virtual std::string resizeBuffer(const unsigned char *buffer, int width, int height) = 0;
+    virtual std::string resizeBuffer(const unsigned char *buffer, int percent) = 0;
+    virtual void setQuality(int qa);
 
 protected:
-    
+    int m_quality;
 
 private:
 };

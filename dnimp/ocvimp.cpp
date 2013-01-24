@@ -31,7 +31,9 @@ std::string OcvImp::resizeFile(const char *file, int width, int height)
     edtname.append(".jpg");
     std::cout<<"fname:"<<edtname<<(&edtname)<<std::endl;
 
-    cv::imwrite(edtname, this->m_dest);
+    std::vector<int> params = {CV_IMWRITE_JPEG_QUALITY, this->m_quality,
+                               CV_IMWRITE_PNG_COMPRESSION, (100 - this->m_quality) / 10};
+    cv::imwrite(edtname, this->m_dest, params);
 
     std::cout<<"fname:"<<edtname<<(&edtname)<<std::endl;
     return edtname;
@@ -56,12 +58,12 @@ std::string OcvImp::resizeFile(const char *file, int percent)
     return nullptr;
 }
 
-std::string OcvImp::resizeBuffer(const char *buffer, int width, int height)
+std::string OcvImp::resizeBuffer(const unsigned char *buffer, int width, int height)
 {
     return nullptr;
 }
 
-std::string OcvImp::resizeBuffer(const char *buffer, int percent)
+std::string OcvImp::resizeBuffer(const unsigned char *buffer, int percent)
 {
     return nullptr;
 }

@@ -1,15 +1,15 @@
-#ifndef _OCVIMP_H_
-#define _OCVIMP_H_
+#ifndef _GMAGICKIMP_H_
+#define _GMAGICKIMP_H_
 
-#include "opencv/cv.h"
+#include <string>
 
 class BaseImp;
 
-class OcvImp : public BaseImp
+class GmagickImp : public BaseImp
 {
 public:
-    explicit OcvImp();
-    virtual ~OcvImp();
+    explicit GmagickImp();
+    virtual ~GmagickImp();
 
     virtual std::string resizeFile(const char *file, int width, int height);
     virtual std::string resizeFile(const char *file, int percent);
@@ -17,15 +17,8 @@ public:
     virtual std::string resizeBuffer(const unsigned char *buffer, int percent);
 
 private:
-    cv::Mat m_src;
-    cv::Mat m_src1;
-    cv::Mat m_src2;
-    cv::Mat m_dest;
-    cv::Mat m_dest1;
-    cv::Mat m_dest2;
-    cv::Mat m_tmp;
-    cv::Mat m_tmp1;
-    cv::Mat m_tmp2;
+
 };
 
-#endif /* _OCVIMP_H_ */
+
+#endif /* _GMAGICKIMP_H_ */
