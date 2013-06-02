@@ -160,12 +160,14 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     std::cout<<"r-main-connt:"<<r->main->count<<std::endl;
     std::cout<<"got img length:"<<img_length<<std::endl;
     */
-    r->main->count += 1; // 这句代码这么管用啊！！！
+    // r->main->count += 1; // 这句代码这么管用啊！！！
 
     // pthread_t pth;
     // int pcr;
     // pcr = pthread_create(&pth, NULL, imp_thread_proc, (void*)r);
-    thpool_add_work(gthp, imp_thread_proc, (void*)r);
+    // thpool_add_work(gthp, imp_thread_proc, (void*)r);
+
+    sleep(50);
 
     return NGX_OK;
     // delete imp;
