@@ -27,9 +27,12 @@ if [ $ngx_found = yes ]; then
     #NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_circle_gif_module.cpp"
     NIMP_TPS="$ngx_addon_dir/thpool.c"
     NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_nullimp.cpp $ngx_addon_dir/cimp.cpp $ngx_addon_dir/cvimp.cpp $ngx_addon_dir/gmimp.cpp $ngx_addon_dir/vipsimp.cpp $NIMP_TPS"
+    NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/../dnimp/baseimp.cpp $ngx_addon_dir/../dnimp/impfactory.cpp $ngx_addon_dir/../dnimp/gmagickimp.cpp $ngx_addon_dir/../dnimp/ocvimp.cpp $ngx_addon_dir/../dnimp/benchmark.cpp "
     #CORE_LIBS="$CORE_LIBS -lMagickWand -lstdc++ -lopencv_core -lopencv_contrib -lopencv_features2d -lopencv_imgproc -lopencv_ml -lopencv_nonfree -lopencv_objdetect  "
-    CORE_LIBS="$CORE_LIBS -lGraphicsMagick -lGraphicsMagickWand -lstdc++ `pkg-config --libs opencv`  "
-    CFLAGS="$CFLAGS -g -std=c++11 `GraphicsMagickWand-config --cppflags` `pkg-config --cflags opencv` "
+    CFLAGS="$CFLAGS -I$ngx_addon_dir/../dnimp"
+    CORE_LIBS="$CORE_LIBS -lstdc++ "
+    CORE_LIBS="$CORE_LIBS -lGraphicsMagick -lGraphicsMagickWand -lstdc++ `PKG_CONFIG_PATH=/usr/local/nullsrv/lib/pkgconfig/ pkg-config --libs opencv`  "
+    CFLAGS="$CFLAGS -g -std=c++11 `GraphicsMagickWand-config --cppflags` `PKG_CONFIG_PATH=/usr/local/nullsrv/lib/pkgconfig/ pkg-config --cflags opencv` "
 else
     cat << END
 $0: error: the Circle GIF addon requires the ImageMagick library.

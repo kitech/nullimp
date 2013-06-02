@@ -54,3 +54,14 @@ http {
 
 还是考虑使用nginx，把worker数放在，把每个worker的连接数设置为1,把keep-alive去掉，这样是否能保证在worker进程数的范围内不会阻塞，不会把多个请求放一个worker上执行吧。
 这样应该能够模拟nginx的轮换式接收请求。
+
+
+########
+参数：
+fu,file_uri=http|file|memcache|fastdfs://pathname
+pe,process_engine=gmagick|imagick|opencv
+qa,=1-100
+sr,scale_rate=0.0-x.y
+ss,scale_size=aXb
+wartermark=
+

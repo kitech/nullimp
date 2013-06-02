@@ -17,6 +17,8 @@ extern "C" {
 #include <cstdlib>
 #include <cstring>
 
+#include "impfactory.h"
+#include "baseimp.h"
 
 #include <wand/magick_wand.h>
 #define radius2index(r, cglcf) (r-(cglcf)->min_radius)/(cglcf)->step_radius
@@ -166,6 +168,11 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     // int pcr;
     // pcr = pthread_create(&pth, NULL, imp_thread_proc, (void*)r);
     // thpool_add_work(gthp, imp_thread_proc, (void*)r);
+
+    BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_OPENCV);
+    std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 500, 400);
+    std::cout<<"file name:" << tname<<(&tname) << std::endl;
+    
 
     sleep(50);
 
