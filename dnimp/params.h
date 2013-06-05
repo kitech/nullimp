@@ -14,9 +14,18 @@ class Params
 public:
     explicit Params(std::string param);
     virtual ~Params();
-
+    
+    // s1x2_t2_qa3.jpg
+    bool parse(std::string param);
 private:
     std::string m_raw_param;
+
+public:
+    int m_scale_width;
+    int m_scale_height;
+    float m_scale_rate;
+    int m_quality;
+    std::string m_ext_name;
 };
 
 #endif /* _PARAMS_H_ */
