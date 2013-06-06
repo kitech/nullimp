@@ -26,7 +26,12 @@ void benchmark_opencv_resize()
     // cv::imwrite("/tmp/abc.jpg", thumb);
 
     BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_OPENCV);
-    std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 500, 400);
+    // 1280x1024 => 100x80
+    // std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 100, 80);
+    // 800x600 => 100x80
+    // std::string tname = himp->resizeFile("/tmp/ocvimyuAoaz.jpg", 100, 80);
+    // 500x400 => 100x80
+    std::string tname = himp->resizeFile("/tmp/ocvimQSaYEX.jpg", 100, 80);
     std::cout<<"file name:" << tname<<(&tname) << std::endl;
     
     // unlink(tname.c_str());
