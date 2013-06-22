@@ -169,12 +169,21 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     // pcr = pthread_create(&pth, NULL, imp_thread_proc, (void*)r);
     // thpool_add_work(gthp, imp_thread_proc, (void*)r);
 
+    struct timeval btv, etv;
+
+    gettimeofday(&btv,0);
+
     BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_OPENCV);
+    // BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_GMAGICK);
     std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 500, 400);
     std::cout<<"file name:" << tname<<(&tname) << std::endl;
     
+    delete himp;
+    // sleep(50);
 
-    sleep(50);
+    gettimeofday(&etv, 0);
+
+    std::cout<<"used time:" << (etv.tv_sec - btv.tv_sec) << " ms:" << (etv.tv_usec - btv.tv_usec)/1000.0 << std::endl;
 
     return NGX_OK;
     // delete imp;

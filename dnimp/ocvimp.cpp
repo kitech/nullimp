@@ -68,3 +68,13 @@ std::string OcvImp::resizeBuffer(const unsigned char *buffer, int percent)
     return nullptr;
 }
 
+
+std::string OcvImp::watermarkFile(const char *wmfile, const char *srcfile, int wmp)
+{
+    return nullptr;
+}
+
+std::string OcvImp::packFiles() 
+{
+    return nullptr;
+}

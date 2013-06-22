@@ -16,6 +16,9 @@ public:
     virtual std::string resizeBuffer(const unsigned char *buffer, int width, int height);
     virtual std::string resizeBuffer(const unsigned char *buffer, int percent);
 
+    virtual std::string watermarkFile(const char *wmfile, const char *srcfile, int wmp = 0);
+    virtual std::string packFiles();
+
 private:
     cv::Mat m_src;
     cv::Mat m_src1;

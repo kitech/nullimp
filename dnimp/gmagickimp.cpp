@@ -61,3 +61,14 @@ std::string GmagickImp::resizeBuffer(const unsigned char *buffer, int percent)
     return nullptr;
 }
 
+
+std::string GmagickImp::watermarkFile(const char *wmfile, const char *srcfile, int wmp)
+{
+    return nullptr;
+}
+
+std::string GmagickImp::packFiles() 
+{
+    return nullptr;
+}
+
