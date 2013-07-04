@@ -58,12 +58,36 @@ std::string OcvImp::resizeFile(const char *file, int percent)
     return nullptr;
 }
 
-std::string OcvImp::resizeBuffer(const unsigned char *buffer, int width, int height)
+std::string OcvImp::resizeBuffer(const unsigned char *buffer, int length, int width, int height)
 {
+    unsigned char *data = (unsigned char*)calloc(1, length);
+    memcpy(data, buffer, length);
+    cv::Mat imgbuf = cv::Mat(480, 640, CV_8U, data);
+
+    this->m_src = cv::imdecode(imgbuf, CV_LOAD_IMAGE_COLOR);
+
+
+    /*
+// decode jpg (or other image from a pointer)
+// imageBuf contains the jpg image
+    cv::Mat imgbuf = cv::Mat(480, 640, CV_8U, imageBuf);
+    cv::Mat imgMat = cv::imdecode(imgbuf, CV_LOAD_IMAGE_COLOR);
+// imgMat is the decoded image
+
+// encode image into jpg
+    cv::vector<uchar> buf;
+    cv::imencode(".jpg", imgMat, buf, std::vector<int>() );
+// encoded image is now in buf (a vector)
+    imageBuf = (unsigned char *) realloc(imageBuf, buf.size());
+    memcpy(imageBuf, &buf[0], buf.size());
+//  size of imageBuf is buf.size();
+*/
+
+
     return nullptr;
 }
 
-std::string OcvImp::resizeBuffer(const unsigned char *buffer, int percent)
+std::string OcvImp::resizeBuffer(const unsigned char *buffer, int length, int percent)
 {
     return nullptr;
 }
@@ -77,4 +101,20 @@ std::string OcvImp::watermarkFile(const char *wmfile, const char *srcfile, int w
 std::string OcvImp::packFiles() 
 {
     return nullptr;
+}
+
+std::string OcvImp::data()
+{
+    cv::vector<uchar> buf;
+    cv::imencode(".jpg", this->m_src, buf, std::vector<int>());
+    
+    unsigned char *imageBuf = (unsigned char*)calloc(buf.size(), 1);
+    memcpy(imageBuf, &buf[0], buf.size());
+
+    std::string d = std::string((char*)imageBuf, buf.size());
+    std::string d1 = std::string((char*)&buf[0], buf.size());
+
+    assert(d == d1);
+
+    return d;
 }

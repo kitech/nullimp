@@ -22,11 +22,13 @@ public:
 
     virtual std::string resizeFile(const char *file, int width, int height) = 0;
     virtual std::string resizeFile(const char *file, int percent) = 0;
-    virtual std::string resizeBuffer(const unsigned char *buffer, int width, int height) = 0;
-    virtual std::string resizeBuffer(const unsigned char *buffer, int percent) = 0;
+    virtual std::string resizeBuffer(const unsigned char *buffer, int length, int width, int height) = 0;
+    virtual std::string resizeBuffer(const unsigned char *buffer, int length,  int percent) = 0;
     virtual void setQuality(int qa);
     virtual std::string watermarkFile(const char *wmfile, const char *srcfile, int wmp = 0) = 0;
     virtual std::string packFiles() = 0;
+
+    virtual std::string data() = 0;
 
 protected:
     int m_quality;

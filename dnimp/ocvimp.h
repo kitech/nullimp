@@ -13,11 +13,13 @@ public:
 
     virtual std::string resizeFile(const char *file, int width, int height);
     virtual std::string resizeFile(const char *file, int percent);
-    virtual std::string resizeBuffer(const unsigned char *buffer, int width, int height);
-    virtual std::string resizeBuffer(const unsigned char *buffer, int percent);
+    virtual std::string resizeBuffer(const unsigned char *buffer, int length, int width, int height);
+    virtual std::string resizeBuffer(const unsigned char *buffer, int length, int percent);
 
     virtual std::string watermarkFile(const char *wmfile, const char *srcfile, int wmp = 0);
     virtual std::string packFiles();
+
+    virtual std::string data() override;
 
 private:
     cv::Mat m_src;

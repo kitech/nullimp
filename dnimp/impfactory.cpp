@@ -19,7 +19,7 @@ BaseImp *ImpFactory::create(int imp_type, bool force_new)
                 ImpFactory::m_inst[imp_type] = new OcvImp();
                 break;
             case ImpFactory::IMP_TYPE_GMAGICK:
-                ImpFactory::m_inst[imp_type] = new GmagickImp();
+                // ImpFactory::m_inst[imp_type] = new GmagickImp();
                 break;
             case ImpFactory::IMP_TYPE_VIPS:
                 // ImpFactory::m_inst[imp_type] = new VipsImp();
