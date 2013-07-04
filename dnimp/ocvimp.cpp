@@ -60,10 +60,19 @@ std::string OcvImp::resizeFile(const char *file, int percent)
 
 std::string OcvImp::resizeBuffer(const unsigned char *buffer, int length, int width, int height)
 {
-    unsigned char *data = (unsigned char*)calloc(1, length);
-    memcpy(data, buffer, length);
-    cv::Mat imgbuf = cv::Mat(480, 640, CV_8U, data);
+    if (0) {
+        unsigned char *data = (unsigned char*)calloc(1, length);
+        memcpy(data, buffer, length);
+        cv::Mat imgbuf = cv::Mat(480, 640, CV_8U, data);
 
+        this->m_src = cv::imdecode(imgbuf, CV_LOAD_IMAGE_COLOR);
+    }
+
+    std::string rawbuf = std::string(buffer, length);
+    std::vector<char> data = std::vector<char>(rawbuf.begin(), rawbuf.end());
+    std::vector<char> data1 std::vector<char>(buffer, buffer + length);
+
+    cv::Mat imgbuf = cv::Mat(data);
     this->m_src = cv::imdecode(imgbuf, CV_LOAD_IMAGE_COLOR);
 
 
