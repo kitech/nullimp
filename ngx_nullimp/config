@@ -34,6 +34,7 @@ if [ $ngx_found = yes ]; then
     #CORE_LIBS="$CORE_LIBS -lGraphicsMagick -lGraphicsMagickWand -lstdc++ `PKG_CONFIG_PATH=/usr/local/nullsrv/lib/pkgconfig/ pkg-config --libs opencv | sed 's/opencv_highgui/opencv_core/g'`  "
     CORE_LIBS="$CORE_LIBS -lGraphicsMagick -lGraphicsMagickWand -lstdc++ `PKG_CONFIG_PATH=/usr/local/nullsrv/lib/pkgconfig/ pkg-config --libs opencv`  "
     CFLAGS="$CFLAGS -g -std=c++11 `GraphicsMagickWand-config --cppflags` `PKG_CONFIG_PATH=/usr/local/nullsrv/lib/pkgconfig/ pkg-config --cflags opencv` "
+    CXXFLAGS="-std=c++11" # no use
 else
     cat << END
 $0: error: the Circle GIF addon requires the ImageMagick library.

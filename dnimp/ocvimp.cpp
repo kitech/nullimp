@@ -68,9 +68,9 @@ std::string OcvImp::resizeBuffer(const unsigned char *buffer, int length, int wi
         this->m_src = cv::imdecode(imgbuf, CV_LOAD_IMAGE_COLOR);
     }
 
-    std::string rawbuf = std::string(buffer, length);
+    std::string rawbuf = std::string((const char*)buffer, length);
     std::vector<char> data = std::vector<char>(rawbuf.begin(), rawbuf.end());
-    std::vector<char> data1 std::vector<char>(buffer, buffer + length);
+    std::vector<char> data1 = std::vector<char>(buffer, buffer + length);
 
     cv::Mat imgbuf = cv::Mat(data);
     this->m_src = cv::imdecode(imgbuf, CV_LOAD_IMAGE_COLOR);
