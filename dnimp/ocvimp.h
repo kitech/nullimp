@@ -21,6 +21,11 @@ public:
 
     virtual std::string data() override;
 
+    virtual std::string mimeType() override;
+    virtual int width() override;
+    virtual int height() override;
+
+
 private:
     cv::Mat m_src;
     cv::Mat m_src1;

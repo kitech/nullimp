@@ -170,20 +170,45 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     // thpool_add_work(gthp, imp_thread_proc, (void*)r);
 
     struct timeval btv, etv;
+    std::string mimeType, imgData;
 
     gettimeofday(&btv,0);
 
     BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_OPENCV);
     // BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_GMAGICK);
-    std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 500, 400);
+    std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 200, 100);
     std::cout<<"file name:" << tname<<(&tname) << std::endl;
     
+    mimeType = himp->mimeType();
+    imgData = himp->data();
+
+    std::cout<<__LINE__ << "get result:" <<mimeType << imgData.length()  << std::endl;
+
+    r->headers_out.content_type.len = mimeType.length();
+    r->headers_out.content_type.data = (u_char*)mimeType.c_str();
+
+    r->headers_out.status = NGX_HTTP_OK;
+    r->headers_out.content_length_n = imgData.length();
+
+
+    b = (ngx_buf_t*)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+    out.buf = b;
+    out.next = NULL;
+
+    b->pos = (u_char*)imgData.c_str();
+    b->last = (u_char*)(imgData.c_str() + imgData.length());
+
+    b->memory = 1;
+    b->last_buf = 1;
+
     delete himp;
     // sleep(50);
 
     gettimeofday(&etv, 0);
-
     std::cout<<"used time:" << (etv.tv_sec - btv.tv_sec) << " ms:" << (etv.tv_usec - btv.tv_usec)/1000.0 << std::endl;
+
+    rc = ngx_http_send_header(r);
+    rc = ngx_http_output_filter(r, &out);
 
     return NGX_OK;
     // delete imp;

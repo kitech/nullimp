@@ -29,6 +29,12 @@ public:
     virtual std::string packFiles() = 0;
 
     virtual std::string data() = 0;
+    virtual std::string mimeType() = 0;
+    virtual int width() = 0;
+    virtual int height() = 0;
+
+    virtual bool isGif(const char *file);
+    virtual bool isGif(const char *buffer, int length);
 
 protected:
     int m_quality;

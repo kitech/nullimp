@@ -20,9 +20,12 @@ OcvImp::~OcvImp()
 
 std::string OcvImp::resizeFile(const char *file, int width, int height)
 {
+    // 在web模式运行时，可能会由于web server的运行权限问题读取失败
     this->m_src = cv::imread(file);
 
+    std::cout<<"before resize:"<<std::endl;
     cv::resize(this->m_src, this->m_dest, cv::Size(width, height));
+    std::cout<<"end resize:"<<std::endl;
 
     char *dtname = tempnam("/tmp", "ocvimp_");
     std::string edtname(dtname);
@@ -115,7 +118,8 @@ std::string OcvImp::packFiles()
 std::string OcvImp::data()
 {
     cv::vector<uchar> buf;
-    cv::imencode(".jpg", this->m_src, buf, std::vector<int>());
+    // cv::imencode(".jpg", this->m_src, buf, std::vector<int>());
+    cv::imencode(".jpg", this->m_dest, buf, std::vector<int>());
     
     unsigned char *imageBuf = (unsigned char*)calloc(buf.size(), 1);
     memcpy(imageBuf, &buf[0], buf.size());
@@ -127,3 +131,30 @@ std::string OcvImp::data()
 
     return d;
 }
+
+std::string OcvImp::mimeType()
+{
+    std::string mtype;
+
+    mtype = "image/jpeg; charset=binary";
+
+    return mtype;
+}
+
+
+int OcvImp::width()
+{
+    cv::Size sz = this->m_src.size();
+
+    return sz.width;
+    return 0;
+}
+
+int OcvImp::height()
+{
+    cv::Size sz = this->m_src.size();
+
+    return sz.height;
+    return 0;
+}
+
