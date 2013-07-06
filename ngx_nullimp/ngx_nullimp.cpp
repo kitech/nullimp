@@ -27,6 +27,9 @@ extern "C" {
 /////// 前置定义函数
 static char* ngx_http_nullimp(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
+static char *test_src_data = NULL;
+static int test_src_len = 0;
+
 typedef struct {
 
 } ngx_http_nullimp_loc_conf_t;
@@ -171,7 +174,7 @@ static int nimp_fill_output_image(BaseImp *himp, ngx_http_request_t *r, ngx_chai
 static char *nimp_read_image_file(char *file, char *buff, int *len)
 {
     // char *buff = 0;
-    char rb[8091] = {0};
+    char rb[8192] = {0};
     int rc;
 
     // buff = (char*) calloc(1024 * 1024, 1);
@@ -179,9 +182,9 @@ static char *nimp_read_image_file(char *file, char *buff, int *len)
 
     *len = 0;
     while (!feof(fp)) {
-        rc = fread(rb, 1, 1000, fp);
-        memcpy(buff + *len, rb, rc);
-        *len += rc;
+        rc = fread(rb, 8192, 1, fp);
+        memcpy(buff + *len, rb, ftell(fp) - *len);
+        *len = ftell(fp);
     }
 
     buff[*len] = 0;
@@ -230,7 +233,8 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     // thpool_add_work(gthp, imp_thread_proc, (void*)r);
 
     struct timeval btv, etv;
-    char fbuff[1024*1024] = {0};
+    // char fbuff[1024*1024] = {0};
+    char *fbuff = 0;
     int flen;
 
     BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_OPENCV);
@@ -238,7 +242,9 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     // std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 200, 100);
 
 
-    nimp_read_image_file("/home/gzleo/shots/nshots93.jpg", fbuff, &flen);
+    // nimp_read_image_file("/home/gzleo/shots/nshots93.jpg", fbuff, &flen);
+    fbuff = test_src_data;
+    flen = test_src_len;
     std::cout<<"read file content done"<<flen<<"\n";
 
     gettimeofday(&btv,0);
@@ -323,6 +329,10 @@ static char* ngx_http_nullimp(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     if (gthp == NULL) {
         gthp = thpool_init(3);
     }
+
+    test_src_data = (char*)calloc(1024 * 1024, 1);
+    nimp_read_image_file("/home/gzleo/shots/nshots93.jpg", test_src_data, &test_src_len);
+
     ngx_log_debug0(NGX_LOG_INFO, cf->log, 0, "enter nullimp module222");
 
     if (!gthp) {
