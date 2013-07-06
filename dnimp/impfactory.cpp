@@ -34,6 +34,16 @@ BaseImp *ImpFactory::create(int imp_type, bool force_new)
     return nullptr;
 }
 
+bool ImpFactory::free(BaseImp *himp, int imp_type)
+{
+    if (ImpFactory::m_inst[imp_type] == himp) {
+        ImpFactory::m_inst[imp_type] = nullptr;
+    }
+    delete himp;
+
+    return true;
+}
+
 
 ImpFactory::ImpFactory(int imp_type, bool force_new)
 {

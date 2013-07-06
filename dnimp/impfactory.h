@@ -11,7 +11,8 @@ public:
     static const int IMP_TYPE_VIPS = 2;
 
     static BaseImp *create(int imp_type, bool force_new = false);
-
+    static bool free(BaseImp *himp, int imp_type);
+    
 protected:
     explicit ImpFactory(int imp_type, bool force_new = false);
     virtual ~ImpFactory();

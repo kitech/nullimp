@@ -134,6 +134,65 @@ static void *imp_thread_proc(void *arg)
     std::cout<<"imp thread done222 "<<std::endl;
 }
 
+// 图片结果输出
+static int nimp_fill_output_image(BaseImp *himp, ngx_http_request_t *r, ngx_chain_t *out)
+{
+    ngx_buf_t *b;
+
+    std::string mimeType, imgData;
+
+    
+    mimeType = himp->mimeType();
+    imgData = himp->data();
+
+    std::cout<<__LINE__ << "get result:" <<mimeType << imgData.length()  << std::endl;
+
+    r->headers_out.content_type.len = mimeType.length();
+    r->headers_out.content_type.data = (u_char*)mimeType.c_str();
+
+    r->headers_out.status = NGX_HTTP_OK;
+    r->headers_out.content_length_n = imgData.length();
+
+
+    b = (ngx_buf_t*)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+    out->buf = b;
+    out->next = NULL;
+
+    b->pos = (u_char*)imgData.c_str();
+    b->last = (u_char*)(imgData.c_str() + imgData.length());
+
+    b->memory = 1;
+    b->last_buf = 1;
+
+
+    return 0;
+}
+
+static char *nimp_read_image_file(char *file, char *buff, int *len)
+{
+    // char *buff = 0;
+    char rb[8091] = {0};
+    int rc;
+
+    // buff = (char*) calloc(1024 * 1024, 1);
+    FILE *fp = fopen(file, "r");
+
+    *len = 0;
+    while (!feof(fp)) {
+        rc = fread(rb, 1, 1000, fp);
+        memcpy(buff + *len, rb, rc);
+        *len += rc;
+    }
+
+    buff[*len] = 0;
+
+    fclose(fp);
+
+    return buff;
+}
+
+
+
 //// 实现
 
 static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
@@ -142,6 +201,7 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     ngx_int_t rc;
     ngx_buf_t *b;
     ngx_chain_t out;
+    
 
     ngx_log_debug0(NGX_LOG_INFO, r->connection->log, 0, "enter nullimp handler");    
     rc = ngx_http_discard_request_body(r);
@@ -170,42 +230,32 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     // thpool_add_work(gthp, imp_thread_proc, (void*)r);
 
     struct timeval btv, etv;
-    std::string mimeType, imgData;
-
-    gettimeofday(&btv,0);
+    char fbuff[1024*1024] = {0};
+    int flen;
 
     BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_OPENCV);
     // BaseImp *himp = ImpFactory::create(ImpFactory::IMP_TYPE_GMAGICK);
-    std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 200, 100);
+    // std::string tname = himp->resizeFile("/home/gzleo/shots/nshots93.jpg", 200, 100);
+
+
+    nimp_read_image_file("/home/gzleo/shots/nshots93.jpg", fbuff, &flen);
+    std::cout<<"read file content done"<<flen<<"\n";
+
+    gettimeofday(&btv,0);
+
+    std::cout<<"before call resizebuff"<<himp<<std::endl;
+    std::string tname = himp->resizeBuffer((const unsigned char*)fbuff, flen, 200, 100);
     std::cout<<"file name:" << tname<<(&tname) << std::endl;
-    
-    mimeType = himp->mimeType();
-    imgData = himp->data();
-
-    std::cout<<__LINE__ << "get result:" <<mimeType << imgData.length()  << std::endl;
-
-    r->headers_out.content_type.len = mimeType.length();
-    r->headers_out.content_type.data = (u_char*)mimeType.c_str();
-
-    r->headers_out.status = NGX_HTTP_OK;
-    r->headers_out.content_length_n = imgData.length();
-
-
-    b = (ngx_buf_t*)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
-    out.buf = b;
-    out.next = NULL;
-
-    b->pos = (u_char*)imgData.c_str();
-    b->last = (u_char*)(imgData.c_str() + imgData.length());
-
-    b->memory = 1;
-    b->last_buf = 1;
-
-    delete himp;
-    // sleep(50);
 
     gettimeofday(&etv, 0);
     std::cout<<"used time:" << (etv.tv_sec - btv.tv_sec) << " ms:" << (etv.tv_usec - btv.tv_usec)/1000.0 << std::endl;
+    
+    nimp_fill_output_image(himp, r, &out);
+    
+    ImpFactory::free(himp, ImpFactory::IMP_TYPE_OPENCV);
+    // delete himp;
+    // sleep(50);
+
 
     rc = ngx_http_send_header(r);
     rc = ngx_http_output_filter(r, &out);

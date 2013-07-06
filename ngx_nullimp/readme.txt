@@ -41,7 +41,8 @@ http://code.google.com/p/nginxsrp/wiki/NginxCodeReview
 主要配置：
 worker_processes 16;
 events {
-    accept_mutex off;
+    multi_accept off;
+    accept_mutex on;
     accept_mutex_delay 1ms;
     worker_connections  32; # [3,n]
 }
