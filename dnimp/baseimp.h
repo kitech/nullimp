@@ -36,6 +36,12 @@ public:
     virtual bool isGif(const char *file);
     virtual bool isGif(const char *buffer, int length);
 
+    /* TODO
+       phashFeature
+       keypointFeature
+       验证码识别
+     */
+
 protected:
     int m_quality;
 
