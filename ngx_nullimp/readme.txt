@@ -10,9 +10,10 @@ build:
     修改nginx-1.2.9/auto/cc/gcc，把-Werror去掉，因为这个插件使用的是c++11参数，会产生一个warning，导致编译无法通过。
 
 在nginx.conf中最上面添加：
-location /nimp {
+location /nimp/ {
     nullimp;
 }
+测试，wget http://localhost/nimp/fnthisispath_opphash.jpg
 调试时，可在配置文件加上daemon off;，方便输出调试。
 
 在nginx模块中，也只能读取nginx配置的DocumentRoot目录下的文件。
