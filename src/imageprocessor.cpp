@@ -177,12 +177,12 @@ QStringList ImageProcessor:: getResult()
 //////////////////////
 char *ImageProcessor:: get_cpath(const QString &srcfile)
 {
-    char *cpath = srcfile.toAscii().data();
+    char *cpath = srcfile.toLatin1().data();
 
     qLogx()<< QString(cpath) << strlen(cpath) << srcfile ;
 
     memset(this->mshbuf, 0, sizeof(this->mshbuf));
-    strncpy(this->mshbuf, srcfile.toAscii().data(), sizeof(this->mshbuf)-1);
+    strncpy(this->mshbuf, srcfile.toLatin1().data(), sizeof(this->mshbuf)-1);
 
     return this->mshbuf;
     return cpath;
@@ -222,7 +222,7 @@ bool ImageProcessor::smooth_it(QString srcfile)
     char window_name[] = "Filter Demo 1";
 
     QString resfile;
-    char *srcimg = srcfile.toAscii().data();
+    char *srcimg = srcfile.toLatin1().data();
     /// Load the source image
     // src = cv::imread( "../images/lena.jpg", 1 );
     src = cv::imread( srcimg, 1 );
@@ -236,7 +236,7 @@ bool ImageProcessor::smooth_it(QString srcfile)
     }
     // resfile = "/tmp/smooth_blur_" + QFileInfo(srcfile).fileName();
     resfile = this->get_tpath(srcfile, "smooth", "blur");
-    cv::imwrite(resfile.toAscii().data(), dst);
+    cv::imwrite(resfile.toLatin1().data(), dst);
     this->mreses << resfile;
 
     dst = src.clone();
@@ -246,7 +246,7 @@ bool ImageProcessor::smooth_it(QString srcfile)
     }
     // resfile = "/tmp/smooth_gblur_" + QFileInfo(srcfile).fileName();
     resfile = this->get_tpath(srcfile, "smooth", "gblur");
-    cv::imwrite(resfile.toAscii().data(), dst);
+    cv::imwrite(resfile.toLatin1().data(), dst);
     this->mreses << resfile;
 
     dst = src.clone();
@@ -257,7 +257,7 @@ bool ImageProcessor::smooth_it(QString srcfile)
     }
     // resfile = "/tmp/smooth_mblur_" + QFileInfo(srcfile).fileName();
     resfile = this->get_tpath(srcfile, "smooth", "mblur");
-    cv::imwrite(resfile.toAscii().data(), dst);
+    cv::imwrite(resfile.toLatin1().data(), dst);
     this->mreses << resfile;
 
     dst = src.clone();
@@ -268,7 +268,7 @@ bool ImageProcessor::smooth_it(QString srcfile)
     }
     // resfile = "/tmp/smooth_bilateral_" + QFileInfo(srcfile).fileName();
     resfile = this->get_tpath(srcfile, "smooth", "bilateral");
-    cv::imwrite(resfile.toAscii().data(), dst);
+    cv::imwrite(resfile.toLatin1().data(), dst);
     this->mreses << resfile;
 
 

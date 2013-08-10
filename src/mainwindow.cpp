@@ -7,6 +7,10 @@
 
 #include <QtGui>
 
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif
+
 #include <opencv/cv.h>
 
 #include "simplelog.h"
@@ -32,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->installConnection();
 
     /////////test
-    this->test1();
+    // this->test1();
 }
 
 MainWindow::~MainWindow()
