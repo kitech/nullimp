@@ -6,7 +6,7 @@ CXX=g++
 
 all: veridt
 
-veridt: main.o
+veridt: main.o funcs.o
 	$(CXX) -o $@ $< $(LDFLAGS)
 
 .cpp.o:

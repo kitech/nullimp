@@ -4,6 +4,9 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/opencv_modules.hpp>
 
+#include "funcs.h"
+
+
 cv::Mat getRotatedImage(cv::Mat src, cv::RotatedRect rrect)
 {
     // rect is the RotatedRect (I got it from a contour...)
@@ -29,12 +32,59 @@ cv::Mat getRotatedImage(cv::Mat src, cv::RotatedRect rrect)
     return cropped;
 }
 
+std::vector<std::vector<cv::Point> > 
+sort_contours(std::vector<std::vector<cv::Point> > contours, int reserved)
+{
+    std::vector<std::vector<cv::Point> >  sorted;
+    
+    for (int i = 0; i < contours.size(); i ++ ) {
+        std::vector<std::vector<cv::Point> >::iterator it;
+        it = sorted.begin();
+        for (; it != sorted.end(); it ++) {
+            if (contours.at(i).size() > (*it).size()) {
+                break;
+            }
+        }
+        sorted.insert(it, contours.at(i));
+    }
+
+    int real_reserved = std::min<int>(reserved, sorted.size());
+    sorted.resize(real_reserved);
+
+    return sorted;
+}
+
+
+#define SRCDIR "namefmt"
+#define SPODIR "splited"
+#define SPICNT 5
+#define DEFALT_SRC "verify1.bmp"
+
 int main(int argc, char **argv)
 {
-    cv::Mat ms,md,md2;
+    cv::Mat ms,md;
+    cv::Mat cleared, cannyed;
     cv::Mat flt(1, 3, 4);
 
-    ms = cv::imread("verify1.bmp");
+    // out names
+    char clear_noise_tpl[100] = SRCDIR "/%s.clear_noise.bmp";
+    char canny_tpl[100] = SRCDIR "/%s.canny.bmp";
+    char split_tpls[][100] = {
+        SPODIR "/%s.split1.bmp",
+        SPODIR "/%s.split2.bmp",
+        SPODIR "/%s.split3.bmp",
+        SPODIR "/%s.split4.bmp",
+        SPODIR "/%s.split5.bmp"
+    };
+    char buff[100] = {0};
+
+    const char *src_path = argc >= 2 ? argv[1] : DEFALT_SRC;
+    const char *fname_start = strrchr(src_path, '/');
+    if (fname_start == NULL) fname_start = src_path;
+    else fname_start = fname_start + 1;
+
+    // read src
+    ms = cv::imread(src_path);
 
     // 转灰
     cv::cvtColor(ms,md, CV_BGR2GRAY, 1);
@@ -109,7 +159,13 @@ int main(int argc, char **argv)
 
     }
 
-    cv::Mat nobg = md.clone();
+    cleared = md.clone();
+    // write clear noise
+    // std::cout<<clear_noise_tpl <<std::endl;
+    memset(buff, 0, sizeof(buff));
+    sprintf(buff, clear_noise_tpl, fname_start);
+    cv::imwrite(buff, cleared);
+    // std::cout<<buff <<std::endl;
 
     // 反转
     for (int i = 0; i < md.rows; i ++) {
@@ -122,12 +178,14 @@ int main(int argc, char **argv)
         }
     }
 
-    cv::Canny(md, md2, 50, 200, 3);
-    // cv::cvtColor(md2, md, CV_GRAY2BGR);
-    // std::cout<<md2;
-    cv::imwrite("canny.bmp", md2);
 
-    std::vector<std::vector<cv::Point> > contours;
+    cv::Canny(md, cannyed, 50, 200, 3);
+    memset(buff, 0, sizeof(buff));
+    sprintf(buff, canny_tpl, fname_start);
+    cv::imwrite(buff, cannyed);
+
+    md = cannyed.clone();
+    std::vector<std::vector<cv::Point> > contours, sorted_contours;
     std::vector<cv::Vec4i> hia;
     cv::findContours(md, contours, hia, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
     // 好像这个连接区域检测效果很差啊
@@ -141,9 +199,9 @@ int main(int argc, char **argv)
             // std::cout << contours.at(i).at(j) << std::endl;
             md.at<uchar>(contours.at(i).at(j)) = 255;
         }
-
     }
 
+    /*
     int nc = 7;
     std::vector<std::vector<cv::Point> > ct;
     ct.push_back(contours.at(nc));
@@ -159,8 +217,29 @@ int main(int argc, char **argv)
     cv::rectangle(mask, drect, cv::Scalar(255, 0, 0), 2);
 
     cv::Mat chimg = getRotatedImage(nobg, area);
+    */
 
-    cv::imwrite("gray.bmp", chimg);
+    // sort
+    sorted_contours = sort_contours(contours, SPICNT);
+
+    std::cout<< "\n" << sorted_contours.size() << "\n";
+    for (int i = 0; i < sorted_contours.size(); i ++) {
+        std::vector<cv::Point> c1 = sorted_contours.at(i);
+        std::cout<< "sorted: " << c1.size() << ", " << hia[i] << "\n";        
+    }
+
+    for (int i = 0; i < sorted_contours.size(); i ++) {
+        cv::RotatedRect area = cv::minAreaRect(sorted_contours.at(i));
+        area.size = cv::Size(area.size.width + 1, area.size.height + 2);
+        cv::Mat chimg = getRotatedImage(cleared, area);
+
+        memset(buff, 0, sizeof(buff));
+        sprintf(buff, split_tpls[i], fname_start);
+
+        std::cout<<buff<<std::endl;
+        cv::imwrite(buff, chimg);
+    }
+
     cv::imwrite("graymy.bmp", md);
 
     return 0;
