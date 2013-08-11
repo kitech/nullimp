@@ -48,7 +48,7 @@ function opencv_train()
     opencv_createsamples -info pos/pos.txt -vec verify.vec -num $pos_num -bg neg/neg.txt
 
     rm -vf trdata/*
-    opencv_traincascade -data trdata -vec verify.vec -bg neg/neg.txt -numStages 15 -numPos $rpos_num -numNeg $rneg_num
+    opencv_traincascade -data trdata -vec verify.vec -bg neg/neg.txt -numStages 16 -numPos $rpos_num -numNeg $rneg_num -minHitRate 0.999 
 
     # 这步可能用到1G的内存。
     # stage可调整，有的可用12,13

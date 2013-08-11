@@ -6,6 +6,12 @@
 
 #include "funcs.h"
 
+// todo  
+/*
+  用historam算法计算并去掉背景
+  
+ */
+
 
 cv::Mat getRotatedImage(cv::Mat src, cv::RotatedRect rrect)
 {
