@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     ms = cv::imread(src_path);
 
     // 转灰
-    cv::cvtColor(ms,md, CV_BGR2GRAY, 1);
+    cv::cvtColor(ms, md, CV_BGR2GRAY, 1);
     // cv::blur(md, ms, cv::Size(5, 5));
     // cv::bilateralFilter(md, md2, 9, 260, 260);
     // cv::GaussianBlur(md, md2, cv::Size(5, 5), 60);
@@ -101,6 +101,10 @@ int main(int argc, char **argv)
     // cv::erode(md, md2, cv::Mat(), cv::Point(-1, -1), 2);
     // cv::dilate(md2, md, cv::Mat(), cv::Point(-1, -1), 2);
     // cv::fastNlMeansDenoising(md, md2, 20);
+
+    cv::imwrite("gray.bmp", md);
+    detect_background(md);
+    return 0;
    
     if (1) {
     std::cout<< md.dims << md.channels() << (short)md.at<uchar>(0, 0) << md.total();
