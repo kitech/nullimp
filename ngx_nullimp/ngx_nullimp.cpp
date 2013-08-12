@@ -236,7 +236,6 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     Imparam *impa = new Imparam((const char*)r->uri.data, r->uri.len);
     impa->parseParam();
     impa->dumpParam();
-    delete impa; impa = 0;
 
     struct timeval btv, etv;
     // char fbuff[1024*1024] = {0};
@@ -255,9 +254,16 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
 
     gettimeofday(&btv,0);
 
-    std::cout<<"before call resizebuff"<<himp<<std::endl;
-    std::string tname = himp->resizeBuffer((const unsigned char*)fbuff, flen, 200, 100);
-    std::cout<<"file name:" << tname<<(&tname) << std::endl;
+    switch (impa->m_operator) {
+    case Imparam::OP_RESIZE: {
+        std::cout<<"before call resizebuff"<<himp<<std::endl;
+        std::string tname = himp->resizeBuffer((const unsigned char*)fbuff, flen, 200, 100);
+        std::cout<<"file name:" << tname<<(&tname) << std::endl;
+    }
+    case Imparam::OP_PHASH:
+    default:
+        break;
+    };
 
     gettimeofday(&etv, 0);
     std::cout<<"used time:" << (etv.tv_sec - btv.tv_sec) << " ms:" << (etv.tv_usec - btv.tv_usec)/1000.0 << std::endl;
@@ -265,9 +271,8 @@ static ngx_int_t ngx_http_nullimp_handler(ngx_http_request_t *r)
     nimp_fill_output_image(himp, r, &out);
     
     ImpFactory::free(himp, ImpFactory::IMP_TYPE_OPENCV);
-    // delete himp;
+    delete impa; impa = 0;
     // sleep(50);
-
 
     rc = ngx_http_send_header(r);
     rc = ngx_http_output_filter(r, &out);

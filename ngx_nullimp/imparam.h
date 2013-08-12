@@ -25,7 +25,7 @@ public:
     bool isParsed;
 
     enum {OP_NONE, OP_RESIZE, OP_CLIP, OP_KEYPOINT, OP_PHASH,
-          OP_DESCRIPTION, OP_CRACK_OCR, OP_EXIF};
+          OP_DESCRIPTION, OP_CRACK_OCR, OP_EXIF, OP_FACE_COUNT, OP_CATEGORY};
     std::string m_raw_source_path;
     char m_source_path[64];
     int m_operator; // 
