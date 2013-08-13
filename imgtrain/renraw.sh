@@ -63,7 +63,7 @@ function opencv_train()
 set -x;
 
 #rename_raws;
-#test_veri_split;
+test_veri_split;
 
-opencv_train;
+#opencv_train;
 

@@ -29,16 +29,17 @@ cv::Mat remove_border(cv::Mat src)
     return src;
 }
 
-cv::Mat custom_dilate(cv::Mat src)
-{
-   // 滤噪管用了
-    cv::Mat ker(3, 3, CV_8UC1, cv::Scalar::all(255));
-    cv::dilate(src, src, ker);
+cv::Mat custom_dilate(cv::Mat src, int bgcolor)
+{   
+    // 滤噪管用了，但这个滤不够好，对线条细的线给滤没了
+    // cv::Mat ker(3, 3, CV_8UC1, cv::Scalar::all(255));
+    // cv::dilate(src, src, ker);
  
     return src;
 }
 
-cv::Mat remove_backgroup(cv::Mat src)
+// 这个还是挺管用的，还可用于检测图像的大体色彩
+cv::Mat remove_backgroup(cv::Mat src, int *pbgcolor)
 {
     /// Establish the number of bins
     int histSize = 256;
@@ -87,6 +88,7 @@ cv::Mat remove_backgroup(cv::Mat src)
         }
     }
 
+    *pbgcolor = bgcolor;
     std::cout<<"bgcolor:"<<bgcolor<<"|" << bgrate<< std::endl;
     for (int i = 0; i < src.rows; i ++) {
         for (int j = 0; j < src.cols; j ++) {
@@ -101,16 +103,14 @@ cv::Mat remove_backgroup(cv::Mat src)
     return src;
 }
 
-cv::Mat custom_erode(cv::Mat src)
+cv::Mat custom_erode(cv::Mat src, int bgcolor)
 {
-    // 滤噪管用了
-    // cv::Mat ker(3, 3, CV_8UC1, cv::Scalar::all(255));
-    // cv::dilate(src, src, ker);
     // 再返过来强化一下被滤掉的部分
     cv::Mat ker2(3, 3, CV_8UC1, cv::Scalar::all(255));
     cv::erode(src, src, ker2);
 
     // get 分水岭的值
+    /*
     /// Establish the number of bins
     int histSize = 256;
     /// Set the ranges ( for B,G,R) )
@@ -140,11 +140,12 @@ cv::Mat custom_erode(cv::Mat src)
             bgcolor = i;
         }
     }
+    */
 
     // 这个分水岭的值不好计算啊
-    std::cout<<"bgcolor222:"<<bgcolor<<"|" << bgrate<< std::endl;
-    // bgcolor = 200;
-    std::cout<<"bgcolor333:"<<bgcolor<<"|" << bgrate<< std::endl;
+    // std::cout<<"bgcolor222:"<<bgcolor<<"|" << bgrate<< std::endl;
+    bgcolor = 210;
+    // std::cout<<"bgcolor333:"<<bgcolor<<"|" << bgrate<< std::endl;
     for (int i = 0; i < src.rows; i ++) {
         for (int j = 0; j < src.cols; j ++) {
             if (src.at<uchar>(i, j) < bgcolor) {
@@ -158,6 +159,10 @@ cv::Mat custom_erode(cv::Mat src)
     // blur一下
     cv::blur(src, src, cv::Size(1, 1));
 
+    cv::Mat ker(3, 3, CV_8UC1, cv::Scalar::all(255));
+    cv::dilate(src, src, ker);
+    cv::dilate(src, src, ker);
+
     return src;
 }
 
@@ -167,15 +172,17 @@ cv::Mat detect_background(cv::Mat src)
     cv::BackgroundSubtractorMOG2 bg; // for video
     // bg.nmixtures = 3;
     // bg.bShawdowDetect = true;
+    int bgcolor = 255;
 
     src = remove_border(src);
-    src = custom_dilate(src);
-    cv::imwrite("custom_dilate.bmp", src);
-    
-    src = remove_backgroup(src);
+   
+    src = remove_backgroup(src, &bgcolor);
     cv::imwrite("remove_backgroup.bmp", src);
 
-    src = custom_erode(src);
+    src = custom_dilate(src, bgcolor);
+    cv::imwrite("custom_dilate.bmp", src);
+
+    src = custom_erode(src, bgcolor);
 
     // std::cout<<src<<std::endl;
     cv::imwrite("custom_erode.bmp", src);
